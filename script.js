@@ -613,14 +613,11 @@ function addExamEventListeners() {
     document.getElementById('back-to-exams').addEventListener('click', () => {
         // Confirm before leaving if answers have been provided
         if (Object.keys(userAnswers).length > 0) {
-            const confirmed = confirm('Сигурни ли сте, че искате да се върнете към списъка с изпити? Вашият напредък ще бъде запазен, но ще излезете от текущия изпит.');
+            const confirmed = confirm('Сигурни ли сте, че искате да се върнете към списъка с изпити? Текущият напредък НЕ ще бъде запазен.');
             if (!confirmed) return;
         }
         
-        // Save current progress before navigating away
-        saveProgress();
-        
-        // Navigate back to index page
+        // Navigate back to index page without saving progress
         window.location.href = 'index.html';
     });
     
