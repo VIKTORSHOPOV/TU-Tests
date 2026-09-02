@@ -115,17 +115,27 @@ async function initializeIndexPage() {
             categories[category].push(exam);
         });
         
-        // Add collapse/expand controls
-        const controls = document.createElement('div');
-        controls.className = 'category-controls';
-        controls.innerHTML = `
+        // Add collapse/expand controls in utility bar
+        const utilityBar = document.createElement('div');
+        utilityBar.className = 'utility-bar';
+        const utilityControls = document.createElement('div');
+        utilityControls.className = 'utility-controls';
+        utilityControls.innerHTML = `
             <button id="collapse-all">Скрий всички</button>
             <button id="expand-all">Покажи всички</button>
         `;
-        examListContainer.insertBefore(controls, examListContainer.firstChild);
+        utilityBar.appendChild(utilityControls);
+        examListContainer.appendChild(utilityBar);
+
+        // Create course columns wrapper
+        const courseColumns = document.createElement('div');
+        courseColumns.className = 'course-columns';
 
         // Create collapsible category sections
         Object.keys(categories).sort().forEach(category => {
+            const courseColumn = document.createElement('div');
+            courseColumn.className = 'course-column';
+            
             const categorySection = document.createElement('div');
             categorySection.className = 'category-section';
             
@@ -133,11 +143,13 @@ async function initializeIndexPage() {
             categoryHeader.className = 'category-header collapsed';
             const count = categories[category].length;
             categoryHeader.innerHTML = `
-                <h3>
-                    ${category}
+                <div class="category-title-group">
+                    <h3>${category}</h3>
+                </div>
+                <div class="category-right-group">
                     <span class="category-count">${count}</span>
-                </h3>
-                <span class="category-toggle" aria-hidden="true"></span>
+                    <span class="category-toggle" aria-hidden="true"></span>
+                </div>
             `;
             categoryHeader.addEventListener('click', () => {
                 const isCollapsed = categoryHeader.classList.contains('collapsed');
@@ -171,8 +183,11 @@ async function initializeIndexPage() {
             categoryContentWrapper.appendChild(categoryContent);
             categorySection.appendChild(categoryHeader);
             categorySection.appendChild(categoryContentWrapper);
-            examListContainer.appendChild(categorySection);
+            courseColumn.appendChild(categorySection);
+            courseColumns.appendChild(courseColumn);
         });
+        
+        examListContainer.appendChild(courseColumns);
         
         // Collapse/expand all buttons
         document.getElementById('collapse-all').addEventListener('click', () => {

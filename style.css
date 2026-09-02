@@ -147,8 +147,8 @@ Author:      Trae AI
     justify-content: center;
     box-shadow: var(--shadow-md);
     transition: var(--transition-base);
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
 }
 
 .dark-mode-toggle:hover {
@@ -158,8 +158,8 @@ Author:      Trae AI
 
 @media (max-width: 768px) {
     .dark-mode-toggle {
-        width: 40px;
-        height: 40px;
+        width: 48px;
+        height: 48px;
         font-size: 18px;
         right: 10px;
         border-radius: 8px;
@@ -242,7 +242,7 @@ footer {
 main {
     flex: 1;
     padding: var(--space-xl);
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
     width: 100%;
 }
@@ -301,11 +301,16 @@ button:disabled {
 }
 
 /* Exam Selection Page */
-.exam-grid {
+.course-columns {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: 1fr;
     gap: var(--space-xl);
-    margin-top: var(--space-xl);
+}
+
+@media (min-width: 768px) {
+    .course-columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /*------------------------------------------------------------------
@@ -323,10 +328,12 @@ button:disabled {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: var(--space-md);
     border: 1px solid var(--border-light);
     transition: all var(--transition-base);
     position: relative;
     overflow: hidden;
+    min-height: 44px;
 }
 
 .category-header::before {
@@ -352,14 +359,29 @@ button:disabled {
     opacity: 1;
 }
 
-.category-header h3 {
+.category-title-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex: 1;
+    min-width: 0;
+}
+
+.category-title-group h3 {
     margin: 0;
     color: var(--text-primary);
     font-size: var(--font-size-lg);
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.category-right-group {
     display: flex;
     align-items: center;
     gap: var(--space-sm);
+    flex-shrink: 0;
 }
 
 .category-toggle {
@@ -414,18 +436,22 @@ button:disabled {
 .category-content {
     overflow: hidden;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: 1fr;
     gap: var(--space-lg);
 }
 
-.category-controls {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--space-sm);
+.utility-bar {
     margin-bottom: var(--space-lg);
 }
 
-.category-controls button {
+.utility-controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.utility-controls button {
     padding: var(--space-sm) var(--space-md);
     font-size: var(--font-size-sm);
     background: transparent;
@@ -433,13 +459,24 @@ button:disabled {
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     transition: all var(--transition-base);
+    min-height: 44px;
 }
 
-.category-controls button:hover:not(:disabled) {
+.utility-controls button:hover:not(:disabled) {
     background: var(--primary-color);
     color: white;
     transform: none;
     box-shadow: none;
+}
+
+@media (max-width: 767px) {
+    .utility-controls {
+        justify-content: stretch;
+    }
+    .utility-controls button {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
 }
 
 /*------------------------------------------------------------------
@@ -467,7 +504,7 @@ button:disabled {
 }
 
 .exam-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
 
@@ -543,6 +580,7 @@ button:disabled {
     background: var(--bg-tertiary);
     color: var(--text-secondary);
     border: 1px solid var(--border-light);
+    min-height: 44px;
 }
 
 .q-btn.current {
@@ -860,6 +898,10 @@ button:disabled {
     .action-buttons a {
         width: 100%;
         margin-bottom: 0;
+    }
+
+    .exam-card .start-btn {
+        width: 100%;
     }
 }
 
