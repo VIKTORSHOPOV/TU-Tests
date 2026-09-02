@@ -115,6 +115,15 @@ async function initializeIndexPage() {
             categories[category].push(exam);
         });
         
+        // Add collapse/expand controls
+        const controls = document.createElement('div');
+        controls.className = 'category-controls';
+        controls.innerHTML = `
+            <button id="collapse-all">Скрий всички</button>
+            <button id="expand-all">Покажи всички</button>
+        `;
+        examListContainer.insertBefore(controls, examListContainer.firstChild);
+
         // Create collapsible category sections
         Object.keys(categories).sort().forEach(category => {
             const categorySection = document.createElement('div');
@@ -122,17 +131,30 @@ async function initializeIndexPage() {
             
             const categoryHeader = document.createElement('div');
             categoryHeader.className = 'category-header collapsed';
+            const count = categories[category].length;
             categoryHeader.innerHTML = `
-                <h3>${category}</h3>
-                <span class="category-toggle">▼</span>
+                <h3>
+                    ${category}
+                    <span class="category-count">${count}</span>
+                </h3>
+                <span class="category-toggle" aria-hidden="true"></span>
             `;
             categoryHeader.addEventListener('click', () => {
-                categoryHeader.classList.toggle('collapsed');
-                categoryContent.classList.toggle('collapsed');
+                const isCollapsed = categoryHeader.classList.contains('collapsed');
+                if (isCollapsed) {
+                    categoryHeader.classList.remove('collapsed');
+                    categoryContentWrapper.classList.add('expanded');
+                } else {
+                    categoryHeader.classList.add('collapsed');
+                    categoryContentWrapper.classList.remove('expanded');
+                }
             });
             
+            const categoryContentWrapper = document.createElement('div');
+            categoryContentWrapper.className = 'category-content-wrapper';
+            
             const categoryContent = document.createElement('div');
-            categoryContent.className = 'category-content collapsed';
+            categoryContent.className = 'category-content';
             
             // Create exam cards for this category
             categories[category].forEach(exam => {
@@ -146,9 +168,29 @@ async function initializeIndexPage() {
                 categoryContent.appendChild(examCard);
             });
             
+            categoryContentWrapper.appendChild(categoryContent);
             categorySection.appendChild(categoryHeader);
-            categorySection.appendChild(categoryContent);
+            categorySection.appendChild(categoryContentWrapper);
             examListContainer.appendChild(categorySection);
+        });
+        
+        // Collapse/expand all buttons
+        document.getElementById('collapse-all').addEventListener('click', () => {
+            document.querySelectorAll('.category-header').forEach(header => {
+                header.classList.add('collapsed');
+            });
+            document.querySelectorAll('.category-content-wrapper').forEach(wrapper => {
+                wrapper.classList.remove('expanded');
+            });
+        });
+        
+        document.getElementById('expand-all').addEventListener('click', () => {
+            document.querySelectorAll('.category-header').forEach(header => {
+                header.classList.remove('collapsed');
+            });
+            document.querySelectorAll('.category-content-wrapper').forEach(wrapper => {
+                wrapper.classList.add('expanded');
+            });
         });
         
         // Add event listeners to start buttons
