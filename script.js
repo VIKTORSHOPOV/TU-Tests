@@ -423,6 +423,13 @@ function loadQuestion(index) {
     
     domElements.questionContent.innerHTML = questionHTML;
 
+    const askAiBtn = document.createElement('button');
+    askAiBtn.className = 'btn-ask-ai';
+    askAiBtn.textContent = '✨ Попитай AI';
+    const options = question.choices ? question.choices.map(c => c.text) : [];
+    askAiBtn.addEventListener('click', () => askAI(askAiBtn, question.prompt, options));
+    domElements.questionContent.appendChild(askAiBtn);
+
     // Make entire choice items clickable
     document.querySelectorAll('.choice-item').forEach(item => {
         item.addEventListener('click', (e) => {
@@ -723,6 +730,44 @@ async function submitExam() {
     }
 }
 
+// Ask AI for question explanation
+async function askAI(buttonElement, questionText, optionsArray) {
+    const originalText = buttonElement.textContent;
+    buttonElement.disabled = true;
+    buttonElement.textContent = '⏳ AI мисли...';
+
+    let explanationContainer = buttonElement.nextElementSibling;
+    if (!explanationContainer || !explanationContainer.classList.contains('ai-explanation')) {
+        explanationContainer = document.createElement('div');
+        explanationContainer.className = 'ai-explanation';
+        buttonElement.insertAdjacentElement('afterend', explanationContainer);
+    }
+    explanationContainer.innerHTML = '<div class="ai-loading">⏳ AI обяснява...</div>';
+    explanationContainer.classList.remove('hidden');
+
+    try {
+        const response = await fetch('/.netlify/functions/ask-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ questionText, options: Array.isArray(optionsArray) ? optionsArray : [] })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Грешка при зареждане на обяснение');
+        }
+
+        explanationContainer.innerHTML = data.explanation.replace(/\n/g, '<br>');
+    } catch (error) {
+        console.error('Ask AI error:', error);
+        explanationContainer.innerHTML = `<div class="ai-error">❌ ${error.message}</div>`;
+    } finally {
+        buttonElement.disabled = false;
+        buttonElement.textContent = originalText;
+    }
+}
+
 // Display exam results from server response
 function displayResults(result) {
     // Display raw score
@@ -761,6 +806,14 @@ function displayResults(result) {
         `;
         
         resultElement.innerHTML = resultHTML;
+
+        const askAiBtn = document.createElement('button');
+        askAiBtn.className = 'btn-ask-ai';
+        askAiBtn.textContent = '✨ Попитай AI';
+        const options = question.choices ? question.choices.map(c => c.text) : [];
+        askAiBtn.addEventListener('click', () => askAI(askAiBtn, question.prompt, options));
+        resultElement.querySelector('.result-question').appendChild(askAiBtn);
+
         domElements.questionBreakdown.appendChild(resultElement);
     });
     

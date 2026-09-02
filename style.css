@@ -528,6 +528,68 @@ button:disabled {
     background: #138496; /* A slightly darker shade for hover */
 }
 
+/* Ask AI */
+.btn-ask-ai {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-base);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+}
+
+.btn-ask-ai:hover:not(:disabled) {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-ask-ai:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.ai-explanation {
+    margin-top: var(--space-md);
+    padding: var(--space-md);
+    background: var(--bg-secondary);
+    border-left: 4px solid var(--primary-color);
+    border-radius: var(--radius-md);
+    line-height: var(--line-height-relaxed);
+    font-size: var(--font-size-base);
+    animation: fade-in 0.3s ease-in-out;
+}
+
+.ai-explanation br {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+[data-theme="dark"] .ai-explanation {
+    background: #1e293b;
+    border-left-color: #60a5fa;
+}
+
+.ai-loading {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.ai-error {
+    color: var(--error-color);
+    font-weight: 600;
+}
+
 /*------------------------------------------------------------------
 [8. Exam Page]
 */
