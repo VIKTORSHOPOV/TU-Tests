@@ -590,6 +590,25 @@ button:disabled {
     font-weight: 600;
 }
 
+.ai-response-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.ai-subheading {
+    display: inline-block;
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+    letter-spacing: 0.01em;
+}
+
+[data-theme="dark"] .ai-subheading {
+    color: #e2e8f0;
+}
+
 /*------------------------------------------------------------------
 [8. Exam Page]
 */

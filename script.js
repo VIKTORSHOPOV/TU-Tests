@@ -742,7 +742,7 @@ async function askAI(buttonElement, questionText, optionsArray) {
         explanationContainer.className = 'ai-explanation';
         buttonElement.insertAdjacentElement('afterend', explanationContainer);
     }
-    explanationContainer.innerHTML = '<div class="ai-loading">⏳ AI обяснява...</div>';
+    explanationContainer.innerHTML = '<div class="ai-response-inner ai-loading">⏳ AI обяснява...</div>';
     explanationContainer.classList.remove('hidden');
 
     try {
@@ -758,10 +758,13 @@ async function askAI(buttonElement, questionText, optionsArray) {
             throw new Error(data.error || 'Грешка при зареждане на обяснение');
         }
 
-        explanationContainer.innerHTML = data.explanation.replace(/\n/g, '<br>');
+        const raw = data.explanation || '';
+        const withLineBreaks = raw.replace(/\n/g, '<br>');
+        const withHeadings = withLineBreaks.replace(/### (.*?)<br>/g, '<strong class="ai-subheading">$1</strong><br>');
+        explanationContainer.innerHTML = `<div class="ai-response-inner">${withHeadings}</div>`;
     } catch (error) {
         console.error('Ask AI error:', error);
-        explanationContainer.innerHTML = `<div class="ai-error">❌ ${error.message}</div>`;
+        explanationContainer.innerHTML = `<div class="ai-response-inner ai-error">❌ ${error.message}</div>`;
     } finally {
         buttonElement.disabled = false;
         buttonElement.textContent = originalText;
