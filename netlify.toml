@@ -1,0 +1,44 @@
+[build]
+  # Directory to publish (relative to root)
+  publish = "."
+  
+  # Default build command (not needed for static sites, but required for functions)
+  command = "echo 'Static site build'"
+
+[build.environment]
+  # Node.js version for Netlify Functions
+  NODE_VERSION = "18"
+
+# Netlify Functions configuration
+[functions]
+  # Directory containing serverless functions
+  directory = "netlify/functions"
+  
+  # Node.js runtime for functions
+  node_bundler = "esbuild"
+
+# Redirect rules for SPA behavior (optional)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  
+# Headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Cache control for static assets
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"

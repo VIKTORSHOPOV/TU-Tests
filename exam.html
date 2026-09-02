@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практикуване на изпити - Решаване на изпит</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    
+    <!-- Prevent page from being embedded in iframes -->
+    <style>html { display: none; }</style>
+    <script>
+        if (self === top) {
+            document.documentElement.style.display = 'block';
+        } else {
+            top.location = self.location;
+        }
+    </script>
+</head>
+<body class="exam-page">
+    <header>
+        <h1 id="exam-title">Заглавие на изпита</h1>
+        <div id="exam-info">
+            <span id="question-counter">Въпрос 0 от 0</span>
+            <span id="timer" class="hidden">Оставащо време: <span id="time-value">00:00</span></span>
+        </div>
+    </header>
+    
+    <main class="exam-container">
+        <aside class="question-nav">
+            <div id="question-buttons">
+                <!-- Бутоните за навигация между въпросите ще бъдат добавени тук -->
+            </div>
+        </aside>
+        
+        <section class="question-display">
+            <div id="question-content">
+                <!-- Текущият въпрос ще се покаже тук -->
+                <div class="loading">Зареждане на изпит...</div>
+            </div>
+            
+            <div id="question-actions">
+                <button id="back-to-exams" class="back-btn">Назад към изпитите</button>
+                <button id="prev-btn" class="nav-btn" disabled>Предишен</button>
+                <button id="next-btn" class="nav-btn">Следващ</button>
+                <button id="submit-exam" class="submit-btn">Предай изпита</button>
+            </div>
+        </section>
+    </main>
+    
+    <section id="results-section" class="hidden">
+        <h2>Резултати от изпита</h2>
+        <div id="score-display">
+            <div id="raw-score"></div>
+            <div id="percentage-score"></div>
+            <div id="pass-fail"></div>
+        </div>
+        
+        <div id="question-breakdown">
+            <!-- Резултатите въпрос по въпрос ще се покажат тук -->
+        </div>
+        
+        <div class="action-buttons">
+            <button id="review-answers" class="review-btn">Преглед на отговорите</button>
+            <button id="retake-exam" class="retake-btn">Повтори изпита</button>
+            <a href="index.html" class="back-btn">Назад към изпитите</a>
+        </div>
+    </section>
+    
+    <footer>
+        <p>&copy; 2026 Приложение за упражнение на изпити</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

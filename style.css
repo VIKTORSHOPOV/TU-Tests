@@ -1,0 +1,862 @@
+/* Base Styles - Unified with auth.css */
+
+/* Import design system variables from main stylesheet */
+/*------------------------------------------------------------------
+[Master Stylesheet]
+
+Project:     Exam Practice App
+Version:     1.0
+Last change: 18/07/2024
+Author:      Trae AI
+-------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------
+[Table of contents]
+
+1. CSS Variables
+2. Dark Mode
+3. Base Styles
+4. Header and Footer
+5. Main Content
+6. Buttons
+7. Exam Card
+8. Exam Page
+9. Question Content
+10. Character Counter and Actions
+11. Results Section
+12. CSS Selector Optimization
+13. Cross-Browser Compatibility
+14. Responsive Design
+-------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------
+[1. CSS Variables]
+*/
+:root {
+    /* Primary Colors - Matching main design system */
+    --primary-color: #007bff;
+    --primary-dark: #0056b3;
+    --primary-light: #66b2ff;
+    --secondary-color: #6c757d;
+    --accent-color: #17a2b8;
+    
+    /* Status Colors */
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    
+    /* Neutral Colors */
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #9ca3af;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --border-color: #dee2e6;
+    --border-light: #f1f3f5;
+    
+    /* Spacing System */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 2.5rem;
+    --space-3xl: 3rem;
+    
+    /* Typography */
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.6;
+    --line-height-relaxed: 1.75;
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Z-index Scale */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal: 1040;
+    --z-popover: 1050;
+    --z-tooltip: 1060;
+}
+
+/*------------------------------------------------------------------
+[2. Dark Mode]
+*/
+:root {
+    /* Light mode colors (default) */
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #9ca3af;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --border-color: #dee2e6;
+    --border-light: #f1f3f5;
+}
+
+[data-theme="dark"] {
+    /* Dark mode colors */
+    --text-primary: #f8f9fa;
+    --text-secondary: #adb5bd;
+    --text-muted: #6c757d;
+    --bg-primary: #212529;
+    --bg-secondary: #343a40;
+    --bg-tertiary: #495057;
+    --border-color: #495057;
+    --border-light: #343a40;
+}
+
+.dark-mode-toggle {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 1000;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-base);
+    width: 36px;
+    height: 36px;
+}
+
+.dark-mode-toggle:hover {
+    background: var(--primary-dark);
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .dark-mode-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        right: 10px;
+        border-radius: 8px;
+    }
+}
+
+.dark-mode-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
+/*------------------------------------------------------------------
+[3. Base Styles]
+*/
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-family);
+    line-height: var(--line-height-normal);
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+/* Header and Footer Styles */
+/*------------------------------------------------------------------
+[4. Header and Footer]
+*/
+header, footer {
+    padding: var(--space-md) var(--space-lg);
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-light);
+    text-align: center;
+}
+
+.header-content, .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+}
+
+header h1 {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    margin: 0;
+    line-height: var(--line-height-tight);
+    color: var(--text-primary);
+}
+
+footer {
+    border-top: 1px solid var(--border-light);
+    border-bottom: none;
+    margin-top: auto;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+/*------------------------------------------------------------------
+[5. Main Content]
+*/
+main {
+    flex: 1;
+    padding: var(--space-xl);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/*------------------------------------------------------------------
+[6. Buttons]
+*/
+button {
+    cursor: pointer;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    transition: var(--transition-base);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    line-height: var(--line-height-tight);
+}
+
+button:hover:not(:disabled) {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.3);
+}
+
+button:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.7;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+/* Exam Selection Page */
+.exam-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-xl);
+    margin-top: var(--space-xl);
+}
+
+/*------------------------------------------------------------------
+[7. Category Collapse]
+*/
+.category-header {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin-bottom: var(--space-lg);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border-light);
+    transition: var(--transition-base);
+}
+
+.category-header:hover {
+    background: var(--bg-tertiary);
+}
+
+.category-header h3 {
+    margin: 0;
+    color: var(--primary-dark);
+    font-size: var(--font-size-lg);
+}
+
+.category-toggle {
+    font-size: var(--font-size-xl);
+    color: var(--text-secondary);
+    transition: transform 0.3s ease;
+}
+
+.category-section .category-header.collapsed .category-toggle {
+    transform: rotate(-90deg);
+}
+
+.category-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    overflow: hidden;
+}
+
+.category-section .category-content.collapsed {
+    display: none !important;
+}
+
+/*------------------------------------------------------------------
+[8. Exam Card]
+*/
+.exam-card {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-xl);
+    transition: var(--transition-base);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-light);
+    animation: fade-in 0.5s ease-in-out both;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.exam-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.exam-card h2 {
+    color: var(--primary-dark);
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-xl);
+}
+
+.exam-card p {
+    margin-bottom: var(--space-lg);
+    flex-grow: 1;
+    color: var(--text-secondary);
+}
+
+.exam-card .start-btn {
+    align-self: flex-end;
+    background: var(--accent-color);
+}
+
+.exam-card .start-btn:hover {
+    background: #138496; /* A slightly darker shade for hover */
+}
+
+/*------------------------------------------------------------------
+[8. Exam Page]
+*/
+.exam-page header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) var(--space-xl);
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.exam-page header h1 {
+    margin: 0;
+    font-size: var(--font-size-xl);
+}
+
+#exam-info {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.exam-container {
+    display: flex;
+    gap: var(--space-xl);
+    margin-top: var(--space-lg);
+}
+
+.question-nav {
+    flex: 0 0 220px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-lg);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+#question-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: var(--space-sm);
+}
+
+.q-btn {
+    width: 100%;
+    padding: var(--space-sm);
+    font-size: var(--font-size-sm);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-light);
+}
+
+.q-btn.current {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-dark);
+}
+
+.q-btn.answered {
+    background: var(--secondary-color);
+    color: white;
+    border-color: var(--primary-dark);
+}
+
+.question-display {
+    flex: 1;
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+}
+
+/*------------------------------------------------------------------
+[9. Question Content]
+*/
+#question-content {
+    flex: 1;
+    margin-bottom: var(--space-xl);
+}
+
+.question-prompt {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.choices-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.choice-item {
+    margin-bottom: 0;
+    padding: var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: var(--transition-base);
+    cursor: pointer;
+}
+
+.choice-item:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--primary-light);
+}
+
+.choice-item input {
+    margin-right: var(--space-sm);
+}
+
+.open-answer textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: var(--font-size-base);
+    resize: vertical;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.open-answer textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/*------------------------------------------------------------------
+[10. Character Counter and Actions]
+*/
+.char-counter {
+    text-align: right;
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-top: var(--space-sm);
+}
+
+#question-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    justify-content: flex-end;
+    margin-top: var(--space-lg);
+    border-top: 1px solid var(--border-light);
+    padding-top: var(--space-lg);
+}
+
+.nav-btn {
+    background: var(--secondary-color);
+    order: 1;
+}
+
+.submit-btn {
+    background: var(--accent-color);
+    margin-left: auto;
+    order: 3;
+}
+
+#back-to-exams {
+    order: 0;
+    margin-right: auto;
+}
+
+.submit-btn {
+    background: var(--accent-color);
+    margin-left: auto;
+}
+
+/* Results Section */
+/*------------------------------------------------------------------
+[11. Results Section]
+*/
+#results-section {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-lg);
+    margin: var(--space-xl) auto;
+    max-width: 800px;
+    border: 1px solid var(--border-color);
+}
+
+#results-section h2 {
+    color: var(--primary-color);
+    margin-bottom: var(--space-lg);
+    text-align: center;
+    font-size: var(--font-size-2xl);
+}
+
+#score-display {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: var(--space-xl);
+    text-align: center;
+    gap: var(--space-lg);
+}
+
+#score-display > div {
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    min-width: 150px;
+    border: 1px solid var(--border-light);
+}
+
+#raw-score, #percentage-score {
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+#pass-fail {
+    font-weight: bold;
+    font-size: var(--font-size-lg);
+}
+
+#pass-fail.pass {
+    color: var(--success-color);
+}
+
+#pass-fail.fail {
+    color: var(--error-color);
+}
+
+#question-breakdown {
+    margin-bottom: var(--space-xl);
+}
+
+.question-result {
+    padding: var(--space-lg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+    background: var(--bg-primary);
+}
+
+.question-result.correct {
+    border-left: 5px solid var(--success-color);
+    background: rgba(40, 167, 69, 0.05);
+}
+
+.question-result.incorrect {
+    border-left: 5px solid var(--error-color);
+    background: rgba(220, 53, 69, 0.05);
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-lg);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--border-light);
+}
+
+.review-btn {
+    background: var(--secondary-color);
+}
+
+.retake-btn {
+    background: var(--primary-color);
+}
+
+.back-btn {
+    display: inline-block;
+    background: var(--text-secondary);
+    color: white;
+    text-decoration: none;
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-md);
+    transition: var(--transition-base);
+}
+
+.back-btn:hover {
+    background: var(--text-primary);
+}
+
+/* CSS Selector Optimization */
+/*
+  - Selectors are optimized for performance by using specific class names and avoiding overly complex or nested selectors.
+  - The BEM (Block, Element, Modifier) methodology is loosely followed to create a clear and maintainable structure.
+  - ID selectors are used sparingly for unique elements to ensure specificity and performance.
+*/
+
+/* Cross-Browser Compatibility */
+/*
+  - The styles are written to be compatible with the latest versions of modern browsers (Chrome, Firefox, Safari, Edge).
+  - Vendor prefixes for properties like `box-shadow` and `border-radius` are included to ensure compatibility with older browser versions.
+  - Flexbox and Grid are used for layout, which have wide support across modern browsers.
+*/
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .exam-container {
+        flex-direction: column;
+    }
+
+    .question-nav {
+        flex: none;
+        width: 100%;
+        max-height: none;
+        margin-bottom: var(--space-xl);
+    }
+}
+
+@media (max-width: 768px) {
+    .exam-page header {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--space-md);
+    }
+
+    #exam-info {
+        margin-top: var(--space-md);
+        justify-content: center;
+    }
+
+    #score-display {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    #question-actions {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    #question-actions button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    #next-btn {
+        order: 1;
+    }
+
+    #prev-btn {
+        order: 2;
+    }
+
+    .submit-btn {
+        margin-left: 0;
+        order: 3;
+    }
+
+    #back-to-exams {
+        order: 4;
+        margin-top: var(--space-lg);
+        border-top: 1px solid var(--border-light);
+        padding-top: var(--space-lg);
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+
+    .action-buttons button,
+    .action-buttons a {
+        width: 100%;
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    main {
+        padding: var(--space-lg);
+    }
+}
+
+/* Accessibility Enhancements */
+:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Feedback Colors */
+.correct-answer {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-color: var(--success-color);
+}
+
+.incorrect-answer {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-color: var(--error-color);
+}
+
+/* Error Styling */
+.error-container, .error-message {
+    text-align: center;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 600px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.error-container h2 {
+    color: var(--error-color);
+    margin-bottom: 1rem;
+}
+
+.error-message p {
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+/* Timer Styling */
+#timer {
+    font-weight: bold;
+}
+
+#timer.warning {
+    color: var(--warning-color);
+}
+
+#timer.danger {
+    color: var(--error-color);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

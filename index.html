@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приложение за изпити - Изберете изпит</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    
+    <!-- Prevent page from being embedded in iframes -->
+    <style>html { display: none; }</style>
+    <script>
+        if (self === top) {
+            document.documentElement.style.display = 'block';
+        } else {
+            top.location = self.location;
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Приложение за упражнение на изпити</h1>
+        <p>Изберете изпит, за да започнете упражнение</p>
+    </header>
+    
+    <main>
+        <section id="exam-list" class="exam-grid">
+            <!-- Картите с изпити ще бъдат добавени динамично тук -->
+            <div class="loading">Зареждане на изпити...</div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2026 Приложение за упражнение на изпити</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Удостоверяване за изпит - Сигурен достъп</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth.css">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    
+    <!-- CryptoJS for SHA-256 hashing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body class="auth-page">
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>Удостоверяване за изпит</h1>
+                <p class="header-subtitle">Сигурен достъп до изпитната система</p>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2>Въведете парола за изпита</h2>
+                <p class="auth-description">
+                    Моля, въведете паролата за достъп до избрания изпит.
+                    Този изпит изисква удостоверяване от съображения за сигурност.
+                </p>
+            </div>
+            
+            <div id="auth-message" class="auth-message hidden" role="status"></div>
+            
+            <form id="auth-form" class="auth-form">
+                <div class="form-group">
+                    <label for="exam-password" class="form-label required">Парола за изпита</label>
+                    <div class="password-input-container">
+                        <input 
+                            type="password" 
+                            id="exam-password" 
+                            name="exam-password" 
+                            class="password-input" 
+                            placeholder="Въведете парола за изпита"
+                            required
+                            minlength="4"
+                            maxlength="50"
+                            autocomplete="off"
+                        >
+                        <button 
+                            type="button" 
+                            id="toggle-password" 
+                            class="password-toggle" 
+                            aria-label="Превключване на видимостта на паролата"
+                        >
+                            <span class="toggle-icon">👁️</span>
+                        </button>
+                    </div>
+                    <div class="password-strength-indicator" id="password-strength"></div>
+                    <div class="error-message" id="password-error" role="alert"></div>
+                </div>
+                
+                <div class="security-notice">
+                    <span class="icon">🔒</span>
+                    <strong>Съобщение за сигурност:</strong> Вашата парола се хешира с помощта на SHA-256 криптиране
+                    преди предаване. Никога не споделяйте паролата си за изпита с други.
+                </div>
+                
+                <button type="submit" id="submit-auth" class="submit-button">
+                    <span class="button-text">Достъп до изпита</span>
+                    <span class="loading-spinner hidden"></span>
+                </button>
+            </form>
+            
+            <div class="back-link">
+                <a href="index.html">← Назад към избора на изпит</a>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2026 Система за сигурни изпити</p>
+    </footer>
+
+    <script src="auth.js"></script>
+</body>
+</html>
