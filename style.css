@@ -118,15 +118,14 @@ Author:      Trae AI
 }
 
 [data-theme="dark"] {
-    /* Dark mode colors */
-    --text-primary: #f8f9fa;
-    --text-secondary: #adb5bd;
-    --text-muted: #6c757d;
-    --bg-primary: #212529;
-    --bg-secondary: #343a40;
-    --bg-tertiary: #495057;
-    --border-color: #495057;
-    --border-light: #343a40;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --border-color: #334155;
+    --border-light: #1e293b;
 }
 
 .dark-mode-toggle {
