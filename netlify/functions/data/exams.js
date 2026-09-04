@@ -2178,18 +2178,18 @@ category: "3.2 курс",
     ]
   },
   {
-  "id": "exam-virtualization-cloud-1",
+  "id": "exam-virtualization-cloud-combined",
   "category": "3.2 курс",
-  "title": "Изпитен тест 1 – Виртуализация и облачни технологии",
-  "description": "Тест по виртуализация, контейнери, облачни услуги и SDN. (Вариант 1)",
+  "title": "Комбиниран изпитен тест – Виртуализация и облачни технологии",
+  "description": "Пълен комбиниран тест по виртуализация, контейнери, облачни услуги и SDN. Включва всички уникални въпроси от Вариант 1 и Вариант 2 за максимална подготовка.",
   "passwordHash": "",
   "settings": {
-    "shuffleQuestions": false,
+    "shuffleQuestions": true,
     "shuffleChoices": false,
-    "timeLimitSeconds": 1800,
+    "timeLimitSeconds": 3600,
     "allowImmediateRetry": true,
     "passingScorePercent": 70,
-    "maxAttempts": 3
+    "maxAttempts": 5
   },
   "questions": [
     {
@@ -2209,6 +2209,19 @@ category: "3.2 курс",
       "id": "q2",
       "type": "single",
       "points": 1,
+      "prompt": "На кой номер на порт ще бъде достъпно приложението, стартирано със следната докер команда: docker run -p 8080:80 nginxdemos/hello",
+      "choices": [
+        { "id": "a", "text": "На порт 8080" },
+        { "id": "b", "text": "На порт 80" },
+        { "id": "c", "text": "На порт 101" },
+        { "id": "d", "text": "На порт 8080:80" }
+      ],
+      "correctAnswer": "a"
+    },
+    {
+      "id": "q3",
+      "type": "single",
+      "points": 1,
       "prompt": "Кой тип хипервайзор може да се инсталира директно върху хардуера (bare metal)?",
       "choices": [
         { "id": "a", "text": "Хипервайзор тип 10" },
@@ -2219,7 +2232,20 @@ category: "3.2 курс",
       "correctAnswer": "c"
     },
     {
-      "id": "q3",
+      "id": "q4",
+      "type": "single",
+      "points": 1,
+      "prompt": "При кой от методите за оптимизиране на паметта е възможно виртуалните машини да използват повече памет от наличната на хоста?",
+      "choices": [
+        { "id": "a", "text": "Page sharing" },
+        { "id": "b", "text": "Ballooning" },
+        { "id": "c", "text": "Hypervisor swapping" },
+        { "id": "d", "text": "Memory overcommitment" }
+      ],
+      "correctAnswer": "d"
+    },
+    {
+      "id": "q5",
       "type": "single",
       "points": 1,
       "prompt": "Кой от следните хипервайзори използва основен (root) дял, на който се инсталират драйвери?",
@@ -2232,7 +2258,20 @@ category: "3.2 курс",
       "correctAnswer": "c"
     },
     {
-      "id": "q4",
+      "id": "q6",
+      "type": "single",
+      "points": 1,
+      "prompt": "Как се нарича хардуерно подпомогнатата виртуализация, реализирана при x86 процесорите на компанията Intel?",
+      "choices": [
+        { "id": "a", "text": "VT-i" },
+        { "id": "b", "text": "ESXi" },
+        { "id": "c", "text": "VT-x" },
+        { "id": "d", "text": "AMD-V" }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q7",
       "type": "single",
       "points": 1,
       "prompt": "Какъв ще е максималния брой виртуални процесори, с които ще разполагате, ако физическият процесор е много ядрен с 8 ядра и поддържа хипернишкова архитектура (hyper-threading)?",
@@ -2245,7 +2284,7 @@ category: "3.2 курс",
       "correctAnswer": "b"
     },
     {
-      "id": "q5",
+      "id": "q8",
       "type": "single",
       "points": 1,
       "prompt": "При коя архитектура на сторидж файловата система се намира в и се управлява от устройството за съхранение, което от своя страна е свързано през мрежа?",
@@ -2258,7 +2297,20 @@ category: "3.2 курс",
       "correctAnswer": "c"
     },
     {
-      "id": "q6",
+      "id": "q9",
+      "type": "single",
+      "points": 1,
+      "prompt": "Кое НЕ Е протокол за връзка със устройства за съхранение (storage)?",
+      "choices": [
+        { "id": "a", "text": "Fiber Channel" },
+        { "id": "b", "text": "SAS" },
+        { "id": "c", "text": "iSCSI" },
+        { "id": "d", "text": "FCP" }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "q10",
       "type": "single",
       "points": 1,
       "prompt": "Кое от следните е протокол за комуникация със сториджа, използван в SAN архитектурата?",
@@ -2271,7 +2323,20 @@ category: "3.2 курс",
       "correctAnswer": "a"
     },
     {
-      "id": "q7",
+      "id": "q11",
+      "type": "single",
+      "points": 1,
+      "prompt": "Чрез кои от следните файлове може да се автоматизира процеса на създаване и свързване на контейнери?",
+      "choices": [
+        { "id": "a", "text": "Dockerfile" },
+        { "id": "b", "text": "Dockerfile.build" },
+        { "id": "c", "text": "Docker-compose.yaml" },
+        { "id": "d", "text": "Buildimage" }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q12",
       "type": "multiple",
       "points": 1,
       "prompt": "Кое от следните НЕ Е десктоп виртуализация (възможни са повече от един верни отговора)?",
@@ -2284,7 +2349,7 @@ category: "3.2 курс",
       "correctAnswer": ["a", "d"]
     },
     {
-      "id": "q8",
+      "id": "q13",
       "type": "multiple",
       "points": 1,
       "prompt": "Кой протокол позволява да се изградят виртуални локални мрежи между отдалечени виртуални машини, чрез използването на тунели (възможни са повече от един верни отговора)?",
@@ -2297,7 +2362,7 @@ category: "3.2 курс",
       "correctAnswer": ["b", "c"]
     },
     {
-      "id": "q9",
+      "id": "q14",
       "type": "single",
       "points": 1,
       "prompt": "Колко пространство ще заема върху диска на хоста виртуален диск с размер 50 GB, настроен в режим Thin Disk и записани 15 GB данни върху него?",
@@ -2310,7 +2375,20 @@ category: "3.2 курс",
       "correctAnswer": "b"
     },
     {
-      "id": "q10",
+      "id": "q15",
+      "type": "single",
+      "points": 1,
+      "prompt": "Кое НЕ Е вид виртуален комутатор при Hyper-V?",
+      "choices": [
+        { "id": "a", "text": "Public" },
+        { "id": "b", "text": "External" },
+        { "id": "c", "text": "Internal" },
+        { "id": "d", "text": "Private" }
+      ],
+      "correctAnswer": "a"
+    },
+    {
+      "id": "q16",
       "type": "multiple",
       "points": 1,
       "prompt": "Кое от следните НЕ СА модели на облачни услуги (възможни са повече от един верни отговора)?",
@@ -2323,7 +2401,7 @@ category: "3.2 курс",
       "correctAnswer": ["c", "d"]
     },
     {
-      "id": "q11",
+      "id": "q17",
       "type": "single",
       "points": 1,
       "prompt": "Кой NSX компонент управлява трафика „изток - запад“?",
@@ -2336,15 +2414,20 @@ category: "3.2 курс",
       "correctAnswer": "a"
     },
     {
-      "id": "q12_code",
-      "type": "open",
-      "points": 6,
-      "prompt": "Напишете докер командата за създаване на имидж с име по ваш избор, като Docker файла се намира в директорията на приложението, от където се изпълнява и командата, и е с име Docker_buildapp.",
-      "correctAnswer": "docker build -f Docker_buildapp -t myapp .",
-      "scoring": { "type": "code", "language": "bash" }
+      "id": "q18",
+      "type": "single",
+      "points": 1,
+      "prompt": "При кой вид виртуален диск е възможно той да заеме пълния си размер върху физическия диск?",
+      "choices": [
+        { "id": "a", "text": "Thick disk" },
+        { "id": "b", "text": "Thin disk" },
+        { "id": "c", "text": "Flexible disk" },
+        { "id": "d", "text": "Physical disk" }
+      ],
+      "correctAnswer": "a"
     },
     {
-      "id": "q13",
+      "id": "q19",
       "type": "multiple",
       "points": 1,
       "prompt": "Кои от следните са основни елементи на SDN (възможни са повече от един верни отговори)?",
@@ -2357,7 +2440,20 @@ category: "3.2 курс",
       "correctAnswer": ["a", "d"]
     },
     {
-      "id": "q14",
+      "id": "q20",
+      "type": "multiple",
+      "points": 1,
+      "prompt": "Кое НЕ Е тип виртуален мрежови адаптер (възможни са повече от един верни отговора)?",
+      "choices": [
+        { "id": "a", "text": "Gateway" },
+        { "id": "b", "text": "Router" },
+        { "id": "c", "text": "NAT" },
+        { "id": "d", "text": "Bridge" }
+      ],
+      "correctAnswer": ["a", "b"]
+    },
+    {
+      "id": "q21",
       "type": "single",
       "points": 1,
       "prompt": "При кой тип облачна инфраструктура имаме споделяне на ресурсите между няколко организации с обща или близка дейност?",
@@ -2370,23 +2466,36 @@ category: "3.2 курс",
       "correctAnswer": "c"
     },
     {
-      "id": "q15",
+      "id": "q22",
+      "type": "single",
+      "points": 1,
+      "prompt": "Коя облачна услуга предоставя на клиента среда за разработка на приложения?",
+      "choices": [
+        { "id": "a", "text": "IaaS" },
+        { "id": "b", "text": "SaaS" },
+        { "id": "c", "text": "PaaS" },
+        { "id": "d", "text": "IaaC" }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q23",
       "type": "multiple",
       "points": 1,
-      "prompt": "Кое от следните е услуга за релационна база от данни в MS Azure?",
+      "prompt": "Кое от следните е услуга за релационна база от данни в MS Azure (изберете всички верни)?",
       "choices": [
         { "id": "a", "text": "Azure Cosmos DB" },
         { "id": "b", "text": "Azure Database for MySQL" },
-        { "id": "c", "text": "Azure Database for MongoDB" },
+        { "id": "c", "text": "Azure Database for PostgreSQL" },
         { "id": "d", "text": "Azure Database for MSSQL" }
       ],
-      "correctAnswer": ["b", "d"]
+      "correctAnswer": ["b", "c", "d"]
     },
     {
-      "id": "q16",
+      "id": "q24",
       "type": "single",
       "points": 1,
-      "prompt": "При коя архитектура на хипервайзор драйверите на устройствата са включени в инсталацията му?",
+      "prompt": "При коя архитектура на хипервайзор драйверите на устройствата са включени в инсталацията му (типична архитектура за хипервайзор)?",
       "choices": [
         { "id": "a", "text": "x86 ядро" },
         { "id": "b", "text": "Микроядро" },
@@ -2396,7 +2505,7 @@ category: "3.2 курс",
       "correctAnswer": "c"
     },
     {
-      "id": "q17",
+      "id": "q25",
       "type": "single",
       "points": 1,
       "prompt": "При кой облачен модел потребителят използва софтуера без да се грижи за неговата поддръжка?",
@@ -2409,7 +2518,20 @@ category: "3.2 курс",
       "correctAnswer": "b"
     },
     {
-      "id": "q18",
+      "id": "q26",
+      "type": "single",
+      "points": 1,
+      "prompt": "Кой хипервайзор може да се инсталира като услуга, част от ОС?",
+      "choices": [
+        { "id": "a", "text": "Hyper-V" },
+        { "id": "b", "text": "VMware ESXi" },
+        { "id": "c", "text": "KVM" },
+        { "id": "d", "text": "Нито един от посочените" }
+      ],
+      "correctAnswer": "a"
+    },
+    {
+      "id": "q27",
       "type": "single",
       "points": 1,
       "prompt": "Кое от следните предоставя контейнери в AWS?",
@@ -2422,14 +2544,7 @@ category: "3.2 курс",
       "correctAnswer": "b"
     },
     {
-      "id": "q19_open",
-      "type": "open",
-      "points": 2,
-      "prompt": "Как се нарича най-популярният в днешно време инструмент за оркестрация на контейнери?",
-      "correctAnswer": "Kubernetes"
-    },
-    {
-      "id": "q20",
+      "id": "q28",
       "type": "single",
       "points": 1,
       "prompt": "Какво ще се случи, ако на хост с процесор с налични 4 ядра и хипернишкова архитектура се пуснат едновременно 2 виртуални машини с по 4 виртуални процесора?",
@@ -2442,7 +2557,20 @@ category: "3.2 курс",
       "correctAnswer": "c"
     },
     {
-      "id": "q21",
+      "id": "q29",
+      "type": "multiple",
+      "points": 1,
+      "prompt": "Какво е необходимо, за да могат Docker контейнерите да комуникират по име (възможни са повече от един верни отговора)?",
+      "choices": [
+        { "id": "a", "text": "да се конфигурира рутер между контейнерите" },
+        { "id": "b", "text": "да се зададе име на контейнера, ръчно" },
+        { "id": "c", "text": "да се създаде мрежа, в която да се включат контейнерите" },
+        { "id": "d", "text": "да се използва името по подразбиране на контейнера" }
+      ],
+      "correctAnswer": ["b", "c"]
+    },
+    {
+      "id": "q30",
       "type": "single",
       "points": 1,
       "prompt": "Кое от следните дава възможност за конфигуриране и стартиране на VM в Google Cloud Platform?",
@@ -2455,10 +2583,10 @@ category: "3.2 курс",
       "correctAnswer": "b"
     },
     {
-      "id": "q22",
+      "id": "q31",
       "type": "single",
       "points": 1,
-      "prompt": "Кой вид облачен модел е предназначен за IT администратори?",
+      "prompt": "Кой вид облачен модел е предназначен за IT администратори (и Мрежови архитекти)?",
       "choices": [
         { "id": "a", "text": "IaaS" },
         { "id": "b", "text": "SaaS" },
@@ -2468,23 +2596,23 @@ category: "3.2 курс",
       "correctAnswer": "a"
     },
     {
-      "id": "q23",
+      "id": "q32",
       "type": "single",
       "points": 1,
       "prompt": "Кое от следните е споделено между контейнерите?",
       "choices": [
         { "id": "a", "text": "Библиотеки" },
         { "id": "b", "text": "Файлова система" },
-        { "id": "c", "text": "Хардуер (ядро / OS kernel)" },
+        { "id": "c", "text": "Операционна система (ядро / OS kernel)" },
         { "id": "d", "text": "Приложения" }
       ],
       "correctAnswer": "c"
     },
     {
-      "id": "q24",
+      "id": "q33",
       "type": "single",
       "points": 1,
-      "prompt": "Чрез коя инструкция при създаването на потребителски имидж (custom image) ще се стартира нов етап при изграждането му?",
+      "prompt": "Коя инструкция в Dockerfile стартира нов етап при създаването на потребителски имидж (custom image)?",
       "choices": [
         { "id": "a", "text": "FROM" },
         { "id": "b", "text": "COPY" },
@@ -2494,7 +2622,20 @@ category: "3.2 курс",
       "correctAnswer": "a"
     },
     {
-      "id": "q25",
+      "id": "q34",
+      "type": "single",
+      "points": 1,
+      "prompt": "Коя инструкция при създаването на потребителски имидж (custom image) ще позволи задаване на команди, след стартиране на docker контейнер, и тези команди могат да бъдат презаписани?",
+      "choices": [
+        { "id": "a", "text": "CMD" },
+        { "id": "b", "text": "COPY" },
+        { "id": "c", "text": "RUN" },
+        { "id": "d", "text": "ENTRYPOINT" }
+      ],
+      "correctAnswer": "a"
+    },
+    {
+      "id": "q35",
       "type": "single",
       "points": 1,
       "prompt": "Коя SDN равнина се използва за наблюдение и конфигуриране на мрежата?",
@@ -2505,340 +2646,52 @@ category: "3.2 курс",
         { "id": "d", "text": "Routing Plane" }
       ],
       "correctAnswer": "b"
+    },
+    {
+      "id": "q36",
+      "type": "single",
+      "points": 1,
+      "prompt": "Кое от следните съставя маршрутизиращата таблица при SDN маршрутизатора?",
+      "choices": [
+        { "id": "a", "text": "Data Plane" },
+        { "id": "b", "text": "Management Plane" },
+        { "id": "c", "text": "Control Plane" },
+        { "id": "d", "text": "Routing Plane" }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q37_code",
+      "type": "open",
+      "points": 6,
+      "prompt": "Напишете докер командата за създаване (build) на имидж с име по ваш избор, като Docker файла се намира в директорията на приложението, от където се изпълнява и командата, и е с име Docker_buildapp.",
+      "correctAnswer": "docker build -f Docker_buildapp -t myapp .",
+      "scoring": { "type": "code", "language": "bash" }
+    },
+    {
+      "id": "q38_code",
+      "type": "open",
+      "points": 6,
+      "prompt": "Напишете докер команда за стартиране на контейнер с MySQL сървър, който да съхранява базите от данни (/var/lib/mysql) в директория D:\\Data на хоста, с имидж mysql:8.0. Конзолата НЕ трябва да показва логовете след стартирането.",
+      "correctAnswer": "docker run -d --name mysql8 -v D:\\Data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:8.0",
+      "scoring": { "type": "code", "language": "bash" }
+    },
+    {
+      "id": "q39_open",
+      "type": "open",
+      "points": 2,
+      "prompt": "Как се нарича мрежата, в която се включват по подразбиране Docker контейнерите?",
+      "correctAnswer": "bridge"
+    },
+    {
+      "id": "q40_open",
+      "type": "open",
+      "points": 2,
+      "prompt": "Как се нарича най-популярният в днешно време инструмент за оркестрация на контейнери?",
+      "correctAnswer": "Kubernetes"
     }
   ]
-},
-  {
-    id: "exam-virtualization-cloud-2",
-	category: "3.2 курс",
-    title: "Изпитен тест 2 – Виртуализация и облачни технологии",
-    description: "Тест по виртуализация, контейнери, облачни услуги и SDN.",
-    passwordHash: "",
-    settings: {
-      shuffleQuestions: false,
-      shuffleChoices: false,
-      timeLimitSeconds: 1800,
-      allowImmediateRetry: true,
-      passingScorePercent: 70,
-      maxAttempts: 3
-    },
-    questions: [
-      {
-        id: "q1",
-        type: "single",
-        points: 1,
-        prompt: "На кой номер на порт ще бъде достъпно приложението, стартирано със следната докер команда: docker run -p 8080:80 nginxdemos/hello",
-        choices: [
-          { id: "a", text: "На порт 8080" },
-          { id: "b", text: "На порт 80" },
-          { id: "c", text: "На порт 101" },
-          { id: "d", text: "На порт 8080:80" }
-        ],
-        correctAnswer: "a"
-      },
-      {
-        id: "q2",
-        type: "single",
-        points: 1,
-        prompt: "При кой от методите за оптимизиране на паметта е възможно виртуалните машини да използват повече памет от наличната на хоста?",
-        choices: [
-          { id: "a", text: "Page sharing" },
-          { id: "b", text: "Ballooning" },
-          { id: "c", text: "Hypervisor swapping" },
-          { id: "d", text: "Memory overcommitment" }
-        ],
-        correctAnswer: "d"
-      },
-      {
-        id: "q3",
-        type: "single",
-        points: 1,
-        prompt: "Кое от следните е хипервайзор тип 1?",
-        choices: [
-          { id: "a", text: "VirtualBox" },
-          { id: "b", text: "VMware ESXi" },
-          { id: "c", text: "VMware Workstation" },
-          { id: "d", text: "Remote Desktop" }
-        ],
-        correctAnswer: "b"
-      },
-      {
-        id: "q4",
-        type: "single",
-        points: 1,
-        prompt: "Как се нарича хардуерно подпомогнатата виртуализация, реализирана при x86 процесорите на компанията Intel?",
-        choices: [
-          { id: "a", text: "VT-i" },
-          { id: "b", text: "ESXi" },
-          { id: "c", text: "VT-x" },
-          { id: "d", text: "AMD-V" }
-        ],
-        correctAnswer: "c"
-      },
-      {
-        id: "q5",
-        type: "single",
-        points: 1,
-        prompt: "Кое НЕ Е протокол за връзка със устройства за съхранение (storage)?",
-        choices: [
-          { id: "a", text: "Fiber Channel" },
-          { id: "b", text: "SAS" },
-          { id: "c", text: "iSCSI" },
-          { id: "d", text: "FCP" }
-        ],
-        correctAnswer: "b"
-      },
-      {
-        id: "q6",
-        type: "single",
-        points: 1,
-        prompt: "Чрез кои от следните файлове може да се автоматизира процеса на създаване и свързване на контейнери?",
-        choices: [
-          { id: "a", text: "Dockerfile" },
-          { id: "b", text: "Dockerfile.build" },
-          { id: "c", text: "Docker-compose.yaml" },
-          { id: "d", text: "Buildimage" }
-        ],
-        correctAnswer: "c"
-      },
-      {
-        id: "q7",
-        type: "multiple",
-        points: 1,
-        prompt: "Кое от следните НЕ Е десктоп виртуализация (възможни са повече от един верни отговора)?",
-        choices: [
-          { id: "a", text: "Remote attached virtual desktop (RAVD)" },
-          { id: "b", text: "Desktop-as-a-Service (DaaS)" },
-          { id: "c", text: "Virtual desktop infrastructure (VDI)" },
-          { id: "d", text: "Network attached desktop (NAD)" }
-        ],
-        correctAnswer: ["a", "d"]
-      },
-      {
-        id: "q8",
-        type: "single",
-        points: 1,
-        prompt: "Кой протокол позволява да се изградят виртуални локални мрежи между отдалечени виртуални машини, чрез използването на тунели?",
-        choices: [
-          { id: "a", text: "VPLAN" },
-          { id: "b", text: "VxWAN" },
-          { id: "c", text: "VMLAN" },
-          { id: "d", text: "GENEVE" }
-        ],
-        correctAnswer: "d"
-      },
-      {
-        id: "q9",
-        type: "single",
-        points: 1,
-        prompt: "Кое НЕ Е вид виртуален комутатор при Hyper-V?",
-        choices: [
-          { id: "a", text: "Public" },
-          { id: "b", text: "External" },
-          { id: "c", text: "Internal" },
-          { id: "d", text: "Private" }
-        ],
-        correctAnswer: "a"
-      },
-      {
-        id: "q10",
-        type: "multiple",
-        points: 1,
-        prompt: "Кое от следните НЕ са модели на облачни услуги (възможни са повече от един верни отговора)?",
-        choices: [
-          { id: "a", text: "Частен облак" },
-          { id: "b", text: "Публичен облак" },
-          { id: "c", text: "Организационен облак" },
-          { id: "d", text: "Общ облак" }
-        ],
-        correctAnswer: ["a", "b", "c", "d"]
-      },
-      {
-        id: "q11",
-        type: "single",
-        points: 1,
-        prompt: "При кой вид виртуален диск е възможно той да заеме пълния си размер върху физическия диск?",
-        choices: [
-          { id: "a", text: "Thick disk" },
-          { id: "b", text: "Thin disk" },
-          { id: "c", text: "Flexible disk" },
-          { id: "d", text: "Physical disk" }
-        ],
-        correctAnswer: "a"
-      },
-      {
-        id: "q12_code",
-        type: "open",
-        points: 6,
-        prompt: "Напишете докер команда за стартиране на контейнер с MySQL сървър, който да съхранява базите от данни (/var/lib/mysql) в директория D:\\Data на хоста, с имидж mysql:8.0. Конзолата НЕ трябва да показва логовете след стартирането.",
-        correctAnswer: "docker run -d --name mysql8 -v D:\\Data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:8.0",
-        scoring: { type: "code", language: "bash" }
-      },
-      {
-        id: "q13",
-        type: "multiple",
-        points: 1,
-        prompt: "Кое НЕ Е тип виртуален мрежови адаптер (възможни са повече от един верни отговора)?",
-        choices: [
-          { id: "a", text: "Gateway" },
-          { id: "b", text: "Router" },
-          { id: "c", text: "NAT" },
-          { id: "d", text: "Bridge" }
-        ],
-        correctAnswer: ["a", "b"]
-      },
-      {
-        id: "q14",
-        type: "single",
-        points: 1,
-        prompt: "Коя облачна услуга предоставя на клиента среда за разработка на приложения?",
-        choices: [
-          { id: "a", text: "IaaS" },
-          { id: "b", text: "SaaS" },
-          { id: "c", text: "PaaS" },
-          { id: "d", text: "IaaC" }
-        ],
-        correctAnswer: "c"
-      },
-      {
-        id: "q15",
-        type: "multiple",
-        points: 1,
-        prompt: "Кое от следните е услуга за релационна база от данни в MS Azure?",
-        choices: [
-          { id: "a", text: "Cosmos DB" },
-          { id: "b", text: "Mongo DB" },
-          { id: "c", text: "PostgreSQL" },
-          { id: "d", text: "MSSQL" }
-        ],
-        correctAnswer: ["c", "d"]
-      },
-      {
-        id: "q16",
-        type: "single",
-        points: 1,
-        prompt: "Кое от следните е типична архитектура на хипервайзор?",
-        choices: [
-          { id: "a", text: "Макро ядро" },
-          { id: "b", text: "Монолитно ядро" },
-          { id: "c", text: "Разпределено ядро" },
-          { id: "d", text: "Разделено ядро" }
-        ],
-        correctAnswer: "b"
-      },
-      {
-        id: "q17",
-        type: "single",
-        points: 1,
-        prompt: "Кой хипервайзор може да се инсталира като услуга, част от ОС?",
-        choices: [
-          { id: "a", text: "Hyper-V" },
-          { id: "b", text: "VMware ESXi" },
-          { id: "c", text: "KVM" },
-          { id: "d", text: "Нито един от посочените" }
-        ],
-        correctAnswer: "a"
-      },
-      {
-        id: "q18",
-        type: "single",
-        points: 1,
-        prompt: "Кое от следните предоставя контейнери в AWS?",
-        choices: [
-          { id: "a", text: "Amazon ECS" },
-          { id: "b", text: "Amazon ECR" },
-          { id: "c", text: "Amazon EC2" },
-          { id: "d", text: "Няма такава услуга" }
-        ],
-        correctAnswer: "a"
-      },
-      {
-        id: "q19_open",
-        type: "open",
-        points: 2,
-        prompt: "Как се нарича мрежата, в която се включват по подразбиране Docker контейнерите?",
-        correctAnswer: "bridge"
-      },
-      {
-        id: "q20",
-        type: "multiple",
-        points: 1,
-        prompt: "Какво е необходимо, за да могат Docker контейнерите да комуникират по име (възможни са повече от един верни отговора)?",
-        choices: [
-          { id: "a", text: "да се конфигурира рутер между контейнерите" },
-          { id: "b", text: "да се зададе име на контейнера, ръчно" },
-          { id: "c", text: "да се създаде мрежа, в която да се включат контейнерите" },
-          { id: "d", text: "да се използва името по подразбиране на контейнера" }
-        ],
-        correctAnswer: ["b", "c"]
-      },
-      {
-        id: "q21",
-        type: "single",
-        points: 1,
-        prompt: "Коя инструкция в Dockerfile стартира нов етап при създаването на потребителски имидж (custom image)?",
-        choices: [
-          { id: "a", text: "FROM" },
-          { id: "b", text: "VOLUME" },
-          { id: "c", text: "NEWSTAGE" },
-          { id: "d", text: "WORKDIR" }
-        ],
-        correctAnswer: "a"
-      },
-      {
-        id: "q22",
-        type: "single",
-        points: 1,
-        prompt: "Кой вид облачни услуги са предназначени за Мрежови архитекти и IT администратори?",
-        choices: [
-          { id: "a", text: "IaaS" },
-          { id: "b", text: "SaaS" },
-          { id: "c", text: "PaaS" },
-          { id: "d", text: "IaC" }
-        ],
-        correctAnswer: "a"
-      },
-      {
-        id: "q23",
-        type: "single",
-        points: 1,
-        prompt: "Кое от следните е споделено между контейнерите?",
-        choices: [
-          { id: "a", text: "Библиотеки" },
-          { id: "b", text: "Операционна система" },
-          { id: "c", text: "Файлова система" },
-          { id: "d", text: "Приложения" }
-        ],
-        correctAnswer: "b"
-      },
-      {
-        id: "q24",
-        type: "single",
-        points: 1,
-        prompt: "Коя инструкция при създаването на потребителски имидж (custom image) ще позволи задаване на команди, след стартиране на docker контейнер, и тези команди могат да бъдат презаписани?",
-        choices: [
-          { id: "a", text: "CMD" },
-          { id: "b", text: "COPY" },
-          { id: "c", text: "RUN" },
-          { id: "d", text: "ENTRYPOINT" }
-        ],
-        correctAnswer: "a"
-      },
-      {
-        id: "q25",
-        type: "single",
-        points: 1,
-        prompt: "Кое от следните съставя маршрутизиращата таблица при SDN маршрутизатора?",
-        choices: [
-          { id: "a", text: "Data Plane" },
-          { id: "b", text: "Management Plane" },
-          { id: "c", text: "Control Plane" },
-          { id: "d", text: "Routing Plane" }
-        ],
-        correctAnswer: "c"
-      }
-    ]
-  }
+}
 ,
   {
     id: "exam-mobile-dev-2025-07-10",
