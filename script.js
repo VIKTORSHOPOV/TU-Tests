@@ -728,7 +728,7 @@ async function submitExam() {
         for (const item of openQuestions) {
             const { question, index } = item;
             try {
-                const response = await fetch('/.netlify/functions/grade-open-question', {
+        const response = await fetch(`${API_BASE}/grade-open-question`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -825,6 +825,9 @@ async function gradeOpenQuestion(questionIndex, question) {
     gradingResultEl.classList.remove('hidden');
 
     try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+
         const response = await fetch('/.netlify/functions/grade-open-question', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -837,11 +840,14 @@ async function gradeOpenQuestion(questionIndex, question) {
                     language: question.scoring?.language || 'csharp',
                     points: question.points
                 }
-            })
+            }),
+            signal: controller.signal
         });
 
+        clearTimeout(timeoutId);
+
         if (!response.ok) {
-            throw new Error('Grading service unavailable');
+            throw new Error(`Grading service error: ${response.status}`);
         }
 
         const data = await response.json();
