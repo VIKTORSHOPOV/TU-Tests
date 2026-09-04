@@ -45,42 +45,54 @@ exports.handler = async (event) => {
 
     const prompt = promptParts.join('\n');
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: {
-            maxOutputTokens: 512,
-            thinkingConfig: {
-              thinkingLevel: 'minimal'
-            }
-          }
-        })
-      }
-    );
+    const maxRetries = 3;
 
-    if (!response.ok) {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              maxOutputTokens: 512,
+              thinkingConfig: {
+                thinkingLevel: 'minimal'
+              }
+            }
+          })
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const explanation =
+          data.candidates?.[0]?.content?.parts?.[0]?.text || 'Неуспешно генериране на обяснение.';
+
+        return {
+          statusCode: 200,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ explanation })
+        };
+      }
+
+      const status = response.status;
       const errorText = await response.text();
-      console.error('Gemini API error:', response.status, errorText);
+      console.error(`Gemini API error (attempt ${attempt + 1}/${maxRetries + 1}):`, status, errorText);
+
+      if ((status === 503 || status === 429) && attempt < maxRetries) {
+        const delayMs = Math.pow(2, attempt) * 1000;
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+        continue;
+      }
+
       return {
         statusCode: 500,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ error: 'Failed to get AI explanation' })
       };
     }
-
-    const data = await response.json();
-    const explanation =
-      data.candidates?.[0]?.content?.parts?.[0]?.text || 'Неуспешно генериране на обяснение.';
-
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ explanation })
-    };
   } catch (error) {
     console.error('ask-ai error:', error);
     return {
