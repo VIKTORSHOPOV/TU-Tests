@@ -179,6 +179,13 @@ function calculateScore(exam, userAnswers) {
 
     rawScore += earnedPoints;
 
+    // Normalize correctAnswer to ensure it's properly formatted for the client
+    let normalizedCorrectAnswer = question.correctAnswer;
+    if (question.type === 'multiple' && !Array.isArray(normalizedCorrectAnswer)) {
+      // If multiple choice but not array, convert to array
+      normalizedCorrectAnswer = [normalizedCorrectAnswer];
+    }
+
     questionResults.push({
       questionIndex: index,
       questionId: question.id,
@@ -186,7 +193,7 @@ function calculateScore(exam, userAnswers) {
       earnedPoints,
       maxPoints: points,
       userAnswer,
-      correctAnswer: question.correctAnswer
+      correctAnswer: normalizedCorrectAnswer
     });
   });
 

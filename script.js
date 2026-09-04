@@ -872,6 +872,14 @@ function formatCorrectAnswer(question, correctAnswer) {
         const choice = question.choices.find(c => c.id === correctAnswer);
         return choice ? choice.text : correctAnswer;
     } else if (question.type === 'multiple') {
+        // Defensive: ensure correctAnswer is an array
+        if (!Array.isArray(correctAnswer)) {
+            console.warn('Multiple choice question has non-array correctAnswer:', question.id, correctAnswer);
+            if (typeof correctAnswer === 'string') {
+                return question.choices.find(c => c.id === correctAnswer)?.text || correctAnswer;
+            }
+            return String(correctAnswer);
+        }
         return correctAnswer.map(answerId => {
             const choice = question.choices.find(c => c.id === answerId);
             return choice ? choice.text : answerId;
