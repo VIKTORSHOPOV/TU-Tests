@@ -749,19 +749,17 @@ async function askAI(buttonElement, questionText, optionsArray) {
             body: JSON.stringify({ questionText, options: Array.isArray(optionsArray) ? optionsArray : [] })
         });
 
-        if (!response.ok) {
-            if (response.status === 504) {
-                throw new Error('The request timed out. Please try again.');
-            }
-            const text = await response.text();
-            throw new Error(text || 'Грешка при зареждане на обяснение');
-        }
+        const rawText = await response.text();
 
         let data;
         try {
-            data = await response.json();
+            data = JSON.parse(rawText);
         } catch {
-            throw new Error('Некоректен отговор от сървъра. Моля, опитайте отново.');
+            throw new Error('Възникна грешка със сървъра (Timeout). Моля, опитайте отново.');
+        }
+
+        if (!response.ok) {
+            throw new Error(data.error || `Грешка при зареждане на обяснение (${response.status})`);
         }
 
         const raw = data.explanation || '';

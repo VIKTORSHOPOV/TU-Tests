@@ -7,6 +7,8 @@ const MODELS = [
   'gemini-2.5-flash'
 ];
 
+const FUNCTION_TIMEOUT_MS = 8500;
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -52,51 +54,72 @@ exports.handler = async (event) => {
 
     const prompt = promptParts.join('\n');
 
-    for (const modelName of MODELS) {
-      try {
-        const response = await ai.models.generateContent({
-          model: modelName,
-          contents: prompt,
-          config: {
-            maxOutputTokens: 2048,
-            thinkingConfig: {
-              thinkingLevel: 'MINIMAL'
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('FUNCTION_TIMEOUT')), FUNCTION_TIMEOUT_MS);
+    });
+
+    const generationPromise = (async () => {
+      for (const modelName of MODELS) {
+        try {
+          const response = await ai.models.generateContent({
+            model: modelName,
+            contents: prompt,
+            config: {
+              maxOutputTokens: 2048,
+              thinkingConfig: {
+                thinkingLevel: 'MINIMAL'
+              }
             }
+          });
+
+          const explanation = response.text || 'Неуспешно генериране на обяснение.';
+
+          return {
+            statusCode: 200,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ explanation })
+          };
+        } catch (err) {
+          const isOverloaded = err.status === 503 || err.message?.includes('503') || err.message?.includes('UNAVAILABLE');
+
+          console.error(`Gemini SDK error [${modelName}]:`, err.message || err);
+
+          if (isOverloaded) {
+            console.warn(`Model ${modelName} overloaded. Switching to fallback model...`);
+            continue;
           }
-        });
 
-        const explanation = response.text || 'Неуспешно генериране на обяснение.';
-
-        return {
-          statusCode: 200,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ explanation })
-        };
-      } catch (err) {
-        const isOverloaded = err.status === 503 || err.message?.includes('503') || err.message?.includes('UNAVAILABLE');
-
-        console.error(`Gemini SDK error [${modelName}]:`, err.message || err);
-
-        if (isOverloaded) {
-          console.warn(`Model ${modelName} overloaded. Switching to fallback model...`);
-          continue;
+          return {
+            statusCode: 500,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ error: 'Failed to get AI explanation' })
+          };
         }
-
-        return {
-          statusCode: 500,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ error: 'Failed to get AI explanation' })
-        };
       }
+
+      return {
+        statusCode: 503,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'AI services experiencing high demand. Please try again shortly.' })
+      };
+    })();
+
+    const result = await Promise.race([generationPromise, timeoutPromise]);
+
+    if (result && result.statusCode === 504) {
+      return result;
     }
 
-    return {
-      statusCode: 503,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: 'AI services experiencing high demand. Please try again shortly.' })
-    };
+    return result;
   } catch (error) {
     console.error('ask-ai error:', error);
+    if (error.message === 'FUNCTION_TIMEOUT') {
+      return {
+        statusCode: 504,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Услугата забави отговора си. Моля, опитайте отново.' })
+      };
+    }
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'application/json' },
