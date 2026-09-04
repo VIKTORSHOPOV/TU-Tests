@@ -9,30 +9,47 @@ const MODELS = [
   'gemini-2.5-flash'
 ];
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Content-Type': 'application/json'
+};
+
 exports.handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers: CORS_HEADERS, body: '' };
+  }
+
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
+    return { statusCode: 405, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
   if (!process.env.GEMINI_API_KEY) {
     return {
       statusCode: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: CORS_HEADERS,
       body: JSON.stringify({ error: 'GEMINI_API_KEY is not configured' })
     };
   }
 
-  const { questionText, userAnswer, correctAnswer, scoring } = JSON.parse(event.body || '{}');
+  let body;
+  try {
+    body = JSON.parse(event.body || '{}');
+  } catch (e) {
+    return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Invalid JSON' }) };
+  }
+
+  const { questionText, userAnswer, correctAnswer, scoring } = body;
 
   if (!questionText || !correctAnswer) {
     return {
       statusCode: 400,
-      headers: { 'Content-Type': 'application/json' },
+      headers: CORS_HEADERS,
       body: JSON.stringify({ error: 'Missing required fields: questionText and correctAnswer' })
     };
   }
 
-  const language = scoring?.language || 'bulgarian';
   const isCode = scoring?.type === 'code';
 
   const gradingPrompt = isCode
@@ -82,7 +99,7 @@ maxPoints: ${scoring?.points || 1}`;
       const timer = setTimeout(() => reject(new Error('MODEL_TIMEOUT')), 5500);
 
       try {
-        const config = { maxOutputTokens: 1024 };
+        const config = { maxOutputTokens: 2048 };
         if (modelName.includes('3.5') || modelName.includes('3.6')) {
           config.thinkingConfig = { thinkingLevel: 'MINIMAL' };
         }
@@ -109,7 +126,7 @@ maxPoints: ${scoring?.points || 1}`;
         const parsed = parseGradingResult(result, scoring?.points || 1);
         return {
           statusCode: 200,
-          headers: { 'Content-Type': 'application/json' },
+          headers: CORS_HEADERS,
           body: JSON.stringify({
             ...parsed,
             modelUsed: modelName
@@ -124,7 +141,7 @@ maxPoints: ${scoring?.points || 1}`;
 
   return {
     statusCode: 504,
-    headers: { 'Content-Type': 'application/json' },
+    headers: CORS_HEADERS,
     body: JSON.stringify({ error: 'Услугата забави отговора си. Моля, опитайте отново.' })
   };
 };
