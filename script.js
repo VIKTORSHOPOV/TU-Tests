@@ -13,9 +13,9 @@ const domElements = {};
 // API base URL - uses relative path for Netlify Functions
 const API_BASE = '/.netlify/functions';
 
-// Rate limit: 15 AI grading requests per minute → 1 request every 4+ seconds.
-// Use 4.5s to stay safely under the limit (13.3 req/min).
-const GRADING_RATE_LIMIT_DELAY_MS = 4500;
+// Rate limit: 15 AI grading requests per minute → minimum 4.5s between request starts.
+// The grading API call itself takes time, so we only sleep for the remaining interval.
+const GRADING_RATE_LIMIT_INTERVAL_MS = 4500;
 
 // Sleep helper for rate-limiting between AI grading requests
 function sleep(ms) {
@@ -739,6 +739,7 @@ async function submitExam() {
 
         for (const item of openQuestions) {
             const { question, index } = item;
+            const requestStart = Date.now();
             try {
                 domElements.questionContent.innerHTML = `<div class="loading">Оценяване на отговори... (${gradedCount}/${totalOpen})</div>`;
                 const controller = new AbortController();
@@ -783,9 +784,14 @@ async function submitExam() {
 
             gradedCount++;
 
-            // Rate-limit break: wait between grading requests to stay under 15 req/min
+            // Rate-limit break: the grading call itself may have taken time,
+            // so only sleep for the remaining interval to stay under 15 req/min.
             if (gradedCount < totalOpen) {
-                await sleep(GRADING_RATE_LIMIT_DELAY_MS);
+                const elapsed = Date.now() - requestStart;
+                const remaining = GRADING_RATE_LIMIT_INTERVAL_MS - elapsed;
+                if (remaining > 0) {
+                    await sleep(remaining);
+                }
             }
         }
 
