@@ -832,6 +832,7 @@ async function gradeOpenQuestion(questionIndex, question) {
 
     let graded = false;
     const fallback = () => {
+        console.log('Grade fallback triggered');
         if (graded) return;
         graded = true;
         const fallbackResult = fallbackGradeOpenQuestion(question, userAnswers[questionIndex]);
@@ -839,12 +840,17 @@ async function gradeOpenQuestion(questionIndex, question) {
         showGradingResult(questionIndex, fallbackResult);
     };
 
-    setTimeout(fallback, 8000);
+    const fallbackTimer = setTimeout(fallback, 8000);
+    console.log('Grade started, fallback timer set for 8s');
 
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 7000);
+        const abortTimer = setTimeout(() => {
+            console.log('Abort controller triggered');
+            controller.abort();
+        }, 7000);
 
+        console.log('Calling grade-open-question endpoint...');
         const response = await fetch(`${API_BASE}/grade-open-question`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -861,15 +867,18 @@ async function gradeOpenQuestion(questionIndex, question) {
             signal: controller.signal
         });
 
-        clearTimeout(timeoutId);
+        clearTimeout(abortTimer);
+        console.log('Got response:', response.status);
 
         if (!response.ok) {
             throw new Error(`Grading service error: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log('Got data:', data);
 
         graded = true;
+        clearTimeout(fallbackTimer);
         questionGrades[questionIndex] = {
             isCorrect: data.isCorrect,
             points: data.points,
