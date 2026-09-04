@@ -870,15 +870,25 @@ function formatUserAnswer(question, userAnswer) {
     if (userAnswer === null || userAnswer === undefined) {
         return '<em>Няма предоставен отговор</em>';
     }
-    
+
     if (question.type === 'single') {
         const choice = question.choices.find(c => c.id === userAnswer);
         return choice ? choice.text : userAnswer;
     } else if (question.type === 'multiple') {
+        // Defensive: ensure userAnswer is an array
+        if (!Array.isArray(userAnswer)) {
+            console.warn('Multiple choice userAnswer is not an array, converting:', question.id, userAnswer);
+            if (typeof userAnswer === 'string') {
+                userAnswer = userAnswer.split(',').map(s => s.trim()).filter(s => s);
+            } else {
+                return '<em>Невалиден формат на отговора</em>';
+            }
+        }
+
         if (userAnswer.length === 0) {
             return '<em>Няма избрани опции</em>';
         }
-        
+
         return userAnswer.map(answerId => {
             const choice = question.choices.find(c => c.id === answerId);
             return choice ? choice.text : answerId;

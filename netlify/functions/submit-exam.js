@@ -186,13 +186,29 @@ function calculateScore(exam, userAnswers) {
       normalizedCorrectAnswer = [normalizedCorrectAnswer];
     }
 
+    // Normalize userAnswer to ensure it's an array for multiple choice questions
+    let normalizedUserAnswer = userAnswer;
+    if (question.type === 'multiple') {
+      if (userAnswer === null || userAnswer === undefined) {
+        normalizedUserAnswer = [];
+      } else if (!Array.isArray(userAnswer)) {
+        // If userAnswer is a string (e.g., comma-separated), split it into an array
+        if (typeof userAnswer === 'string') {
+          normalizedUserAnswer = userAnswer.split(',').map(s => s.trim()).filter(s => s);
+        } else {
+          // For other non-array types, wrap in an array
+          normalizedUserAnswer = [userAnswer];
+        }
+      }
+    }
+
     questionResults.push({
       questionIndex: index,
       questionId: question.id,
       isCorrect,
       earnedPoints,
       maxPoints: points,
-      userAnswer,
+      userAnswer: normalizedUserAnswer,
       correctAnswer: normalizedCorrectAnswer
     });
   });
