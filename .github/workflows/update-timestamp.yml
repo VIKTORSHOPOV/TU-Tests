@@ -19,6 +19,8 @@ jobs:
           fetch-depth: 0
 
       - name: Update last updated timestamp
+        env:
+          TZ: Europe/Sofia
         run: |
           TIMESTAMP=$(date +"%d.%m.%Y %H:%M")
           sed -i 's|<span id="update-date">[^<]*</span>|<span id="update-date">'"${TIMESTAMP}"'</span>|' exam.html
