@@ -508,6 +508,7 @@ function createOpenEndedHTML(question, questionIndex) {
             <label for="${textareaId}" class="sr-only">Вашият отговор на въпрос ${questionIndex + 1}</label>
             <textarea id="${textareaId}" name="q${questionIndex}" rows="6" placeholder="Въведете вашия отговор тук..."></textarea>
             <div class="char-counter" aria-live="polite">0 символа</div>
+            <button id="check-answer-${questionIndex}" class="btn-check-answer" onclick="manualGradeOpenQuestion(${questionIndex})">Провери отговора</button>
             <div id="grading-result-${questionIndex}" class="grading-result hidden"></div>
         </div>
     `;
@@ -567,11 +568,6 @@ function saveCurrentAnswer() {
     } else if (question.type === 'open') {
         const textAnswer = document.querySelector(`textarea[name="q${currentQuestionIndex}"]`).value.trim();
         userAnswers[currentQuestionIndex] = textAnswer !== '' ? textAnswer : null;
-
-        // Trigger AI grading for open questions
-        if (userAnswers[currentQuestionIndex]) {
-            gradeOpenQuestion(currentQuestionIndex, question);
-        }
     }
 
     // Save progress to localStorage
@@ -719,12 +715,54 @@ async function submitExam() {
     if (examTimer) {
         clearInterval(examTimer);
     }
-    
+
     try {
         // Show loading state
-        domElements.questionContent.innerHTML = '<div class="loading">Изпращане на отговорите...</div>';
-        
-        // Submit answers to server for validation
+        domElements.questionContent.innerHTML = '<div class="loading">Предаване на изпита и оценяване...</div>';
+
+        // First, grade all open questions with AI
+        const openQuestions = currentExam.questions
+            .map((q, i) => ({ question: q, index: i }))
+            .filter(item => item.question.type === 'open');
+
+        for (const item of openQuestions) {
+            const { question, index } = item;
+            try {
+                const response = await fetch('/.netlify/functions/grade-open-question', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        questionText: question.prompt,
+                        userAnswer: userAnswers[index],
+                        correctAnswer: question.correctAnswer,
+                        scoring: {
+                            type: question.scoring?.type || 'fuzzy',
+                            language: question.scoring?.language || 'csharp',
+                            points: question.points
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    questionGrades[index] = {
+                        isCorrect: data.isCorrect,
+                        points: data.points,
+                        maxPoints: question.points,
+                        comment: data.comment || '',
+                        modelUsed: data.modelUsed
+                    };
+                } else {
+                    throw new Error('AI grading failed');
+                }
+            } catch (err) {
+                console.warn(`AI grading failed for question ${index}, using fallback:`, err);
+                // Fallback to built-in scoring
+                questionGrades[index] = fallbackGradeOpenQuestion(question, userAnswers[index]);
+            }
+        }
+
+        // Now submit all answers to server for validation of single/multiple choice
         const response = await fetch(`${API_BASE}/submit-exam`, {
             method: 'POST',
             headers: {
@@ -736,13 +774,31 @@ async function submitExam() {
                 timeRemaining: timeRemaining
             })
         });
-        
+
         if (!response.ok) {
             throw new Error('Failed to submit exam');
         }
-        
+
         const result = await response.json();
-        
+
+        // Override open question results with AI-grader results
+        result.questionResults = result.questionResults.map(qr => {
+            const aiGrade = questionGrades[qr.questionIndex];
+            if (aiGrade !== undefined) {
+                return {
+                    ...qr,
+                    isCorrect: aiGrade.isCorrect,
+                    earnedPoints: aiGrade.points
+                };
+            }
+            return qr;
+        });
+
+        // Recalculate total score with AI grades
+        result.rawScore = result.questionResults.reduce((sum, qr) => sum + (qr.earnedPoints || 0), 0);
+        result.percentage = (result.rawScore / result.maxScore) * 100;
+        result.passed = result.percentage >= (result.passingScorePercent || 0);
+
         // Display results
         displayResults(result);
 
@@ -808,6 +864,23 @@ async function gradeOpenQuestion(questionIndex, question) {
         showGradingResult(questionIndex, fallbackResult);
     }
 }
+
+// Manual grading function - called by button click
+async function manualGradeOpenQuestion(questionIndex) {
+    const question = currentExam.questions[questionIndex];
+    if (!question) return;
+
+    // Save current answer first
+    const textarea = document.querySelector(`textarea[name="q${questionIndex}"]`);
+    if (textarea) {
+        userAnswers[questionIndex] = textarea.value.trim() || null;
+    }
+
+    await gradeOpenQuestion(questionIndex, question);
+}
+
+// Make manualGradeOpenQuestion globally accessible for onclick
+window.manualGradeOpenQuestion = manualGradeOpenQuestion;
 
 // Fallback grading when AI fails - uses stored correct answers
 function fallbackGradeOpenQuestion(question, userAnswer) {

@@ -559,6 +559,37 @@ button:disabled {
     box-shadow: none;
 }
 
+/* Check Answer Button */
+.btn-check-answer {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-base);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+}
+
+.btn-check-answer:hover:not(:disabled) {
+    background: #218838;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-check-answer:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 .ai-explanation {
     margin-top: var(--space-md);
     padding: var(--space-md);
