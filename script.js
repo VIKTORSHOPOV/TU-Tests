@@ -5,6 +5,7 @@ let userAnswers = {};
 let examTimer = null;
 let timeRemaining = 0;
 let examsData = []; // Will be populated from API
+let questionGrades = {}; // Store AI grading results for open questions
 
 // DOM Elements
 const domElements = {};
@@ -507,6 +508,7 @@ function createOpenEndedHTML(question, questionIndex) {
             <label for="${textareaId}" class="sr-only">Вашият отговор на въпрос ${questionIndex + 1}</label>
             <textarea id="${textareaId}" name="q${questionIndex}" rows="6" placeholder="Въведете вашия отговор тук..."></textarea>
             <div class="char-counter" aria-live="polite">0 символа</div>
+            <div id="grading-result-${questionIndex}" class="grading-result hidden"></div>
         </div>
     `;
 }
@@ -554,7 +556,7 @@ function updateNavigationButtons() {
 // Save current answer
 function saveCurrentAnswer() {
     const question = currentExam.questions[currentQuestionIndex];
-    
+
     if (question.type === 'single') {
         const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
         userAnswers[currentQuestionIndex] = selectedOption ? selectedOption.value : null;
@@ -565,8 +567,13 @@ function saveCurrentAnswer() {
     } else if (question.type === 'open') {
         const textAnswer = document.querySelector(`textarea[name="q${currentQuestionIndex}"]`).value.trim();
         userAnswers[currentQuestionIndex] = textAnswer !== '' ? textAnswer : null;
+
+        // Trigger AI grading for open questions
+        if (userAnswers[currentQuestionIndex]) {
+            gradeOpenQuestion(currentQuestionIndex, question);
+        }
     }
-    
+
     // Save progress to localStorage
     saveProgress();
 }
@@ -574,13 +581,13 @@ function saveCurrentAnswer() {
 // Restore user's previous answer
 function restoreUserAnswer(index) {
     const savedAnswer = userAnswers[index];
-    
+
     if (savedAnswer === undefined || savedAnswer === null) {
         return;
     }
-    
+
     const question = currentExam.questions[index];
-    
+
     if (question.type === 'single') {
         const option = document.querySelector(`input[name="q${index}"][value="${savedAnswer}"]`);
         if (option) {
@@ -604,6 +611,11 @@ function restoreUserAnswer(index) {
                 charCounter.textContent = `${length} символ${length !== 1 ? 'а' : ''}`;
             }
         }
+
+        // Restore grading result if available
+        if (questionGrades[index]) {
+            showGradingResult(index, questionGrades[index]);
+        }
     }
 }
 
@@ -612,6 +624,7 @@ function resetExamState() {
     currentExam = null;
     currentQuestionIndex = 0;
     userAnswers = {};
+    questionGrades = {};
     if (examTimer) {
         clearInterval(examTimer);
         examTimer = null;
@@ -687,12 +700,13 @@ function addExamEventListeners() {
     
     // Retake exam button
     domElements.retakeExam.addEventListener('click', () => {
-        // Reset user answers
+        // Reset user answers and grades
         userAnswers = {};
-        
+        questionGrades = {};
+
         // Clear localStorage for this exam
         localStorage.removeItem(`exam_${currentExam.id}_progress`);
-        
+
         // Reload exam
         domElements.resultsSection.classList.add('hidden');
         loadExam();
@@ -731,10 +745,10 @@ async function submitExam() {
         
         // Display results
         displayResults(result);
-        
+
         // Clear saved progress
         localStorage.removeItem(`exam_${currentExam.id}_progress`);
-        
+
     } catch (error) {
         console.error('Error submitting exam:', error);
         domElements.questionContent.innerHTML = `
@@ -744,6 +758,178 @@ async function submitExam() {
             </div>
         `;
     }
+}
+
+// Grade open question using AI
+async function gradeOpenQuestion(questionIndex, question) {
+    const gradingResultEl = document.getElementById(`grading-result-${questionIndex}`);
+    if (!gradingResultEl) return;
+
+    gradingResultEl.innerHTML = '<div class="grading-loading">⏳ AI проверява отговора...</div>';
+    gradingResultEl.classList.remove('hidden');
+
+    try {
+        const response = await fetch('/.netlify/functions/grade-open-question', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                questionText: question.prompt,
+                userAnswer: userAnswers[questionIndex],
+                correctAnswer: question.correctAnswer,
+                scoring: {
+                    type: question.scoring?.type || 'fuzzy',
+                    language: question.scoring?.language || 'csharp',
+                    points: question.points
+                }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Grading service unavailable');
+        }
+
+        const data = await response.json();
+
+        questionGrades[questionIndex] = {
+            isCorrect: data.isCorrect,
+            points: data.points,
+            maxPoints: question.points,
+            comment: data.comment || '',
+            modelUsed: data.modelUsed
+        };
+
+        showGradingResult(questionIndex, questionGrades[questionIndex]);
+
+    } catch (error) {
+        console.error('Grading error:', error);
+        // Fallback to stored answer-based scoring
+        const fallbackResult = fallbackGradeOpenQuestion(question, userAnswers[questionIndex]);
+        questionGrades[questionIndex] = fallbackResult;
+        showGradingResult(questionIndex, fallbackResult);
+    }
+}
+
+// Fallback grading when AI fails - uses stored correct answers
+function fallbackGradeOpenQuestion(question, userAnswer) {
+    const scoring = question.scoring || { type: 'fuzzy', tolerance: 0.2 };
+    let isCorrect = false;
+    let points = 0;
+
+    if (!userAnswer || userAnswer.trim() === '') {
+        return { isCorrect: false, points: 0, maxPoints: question.points, comment: 'Липсващ отговор', modelUsed: 'fallback' };
+    }
+
+    if (scoring.type === 'code') {
+        const normalizedUser = normalizeCode(userAnswer);
+        const normalizedCorrect = normalizeCode(question.correctAnswer);
+        isCorrect = normalizedUser === normalizedCorrect;
+    } else if (scoring.type === 'exact') {
+        const caseSensitive = scoring.caseSensitive || false;
+        const correctAnswers = scoring.acceptableValues || [question.correctAnswer];
+        isCorrect = correctAnswers.some(ans => {
+            return caseSensitive ? userAnswer === ans : userAnswer.toLowerCase() === ans.toLowerCase();
+        });
+    } else if (scoring.type === 'regex') {
+        const regexPatterns = scoring.acceptableRegex || [];
+        isCorrect = regexPatterns.some(pattern => {
+            const regex = new RegExp(pattern, scoring.caseSensitive ? '' : 'i');
+            return regex.test(userAnswer);
+        });
+    } else {
+        // Fuzzy matching (default)
+        const correctAnswers = scoring.acceptableValues || [question.correctAnswer];
+        const tolerance = scoring.tolerance || 0.2;
+        isCorrect = correctAnswers.some(ans => {
+            const similarity = calculateSimilarity(userAnswer, ans);
+            return similarity >= tolerance;
+        });
+    }
+
+    points = isCorrect ? question.points : 0;
+
+    return {
+        isCorrect,
+        points,
+        maxPoints: question.points,
+        comment: isCorrect ? 'Отговорът е верен според критериите' : 'Отговорът не съвпада с очаквания',
+        modelUsed: 'fallback'
+    };
+}
+
+// Show grading result in the UI
+function showGradingResult(questionIndex, result) {
+    const gradingResultEl = document.getElementById(`grading-result-${questionIndex}`);
+    if (!gradingResultEl) return;
+
+    const statusIcon = result.isCorrect ? '✅' : '❌';
+    const statusText = result.isCorrect ? 'Верен' : 'Грешен';
+    const statusClass = result.isCorrect ? 'grading-correct' : 'grading-incorrect';
+
+    let modelBadge = '';
+    if (result.modelUsed && result.modelUsed !== 'fallback') {
+        const formattedModel = result.modelUsed
+            .replace('gemini-', 'Gemini ')
+            .replace('-flash-lite', ' Flash Lite')
+            .replace('-flash', ' Flash');
+        modelBadge = `<span class="grading-model">${formattedModel}</span>`;
+    }
+
+    gradingResultEl.innerHTML = `
+        <div class="grading-result-content ${statusClass}">
+            <span class="grading-icon">${statusIcon}</span>
+            <span class="grading-status">${statusText}</span>
+            <span class="grading-points">${result.points}/${result.maxPoints} т.</span>
+            ${modelBadge}
+            ${result.comment ? `<p class="grading-comment">${result.comment}</p>` : ''}
+        </div>
+    `;
+    gradingResultEl.classList.remove('hidden');
+
+    // Update question button to show grading status
+    updateQuestionButtonGrade(questionIndex, result.isCorrect);
+}
+
+// Update question button to show grading status
+function updateQuestionButtonGrade(questionIndex, isCorrect) {
+    const buttons = domElements.questionButtons.querySelectorAll('.q-btn');
+    const button = buttons[questionIndex];
+    if (button) {
+        button.classList.remove('grade-correct', 'grade-incorrect');
+        button.classList.add(isCorrect ? 'grade-correct' : 'grade-incorrect');
+    }
+}
+
+// Normalize code for comparison
+function normalizeCode(code) {
+    if (!code) return '';
+    return code.trim().replace(/\s+/g, ' ');
+}
+
+// Calculate similarity between two strings
+function calculateSimilarity(str1, str2) {
+    if (str1 === str2) return 1.0;
+    const len1 = str1.length;
+    const len2 = str2.length;
+    if (len1 === 0 || len2 === 0) return 0.0;
+
+    const matrix = Array(len1 + 1).fill().map(() => Array(len2 + 1).fill(0));
+    for (let i = 0; i <= len1; i++) matrix[i][0] = i;
+    for (let j = 0; j <= len2; j++) matrix[0][j] = j;
+
+    for (let i = 1; i <= len1; i++) {
+        for (let j = 1; j <= len2; j++) {
+            const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
+            matrix[i][j] = Math.min(
+                matrix[i - 1][j] + 1,
+                matrix[i][j - 1] + 1,
+                matrix[i - 1][j - 1] + cost
+            );
+        }
+    }
+
+    const distance = matrix[len1][len2];
+    const maxLen = Math.max(len1, len2);
+    return 1.0 - (distance / maxLen);
 }
 
 // Ask AI for question explanation
@@ -932,23 +1118,28 @@ function formatCorrectAnswer(question, correctAnswer) {
 function checkForSavedProgress() {
     try {
         const savedProgress = localStorage.getItem(`exam_${currentExam.id}_progress`);
-        
+
         if (savedProgress) {
             const parsed = JSON.parse(savedProgress);
-            const { answers, timeLeft, timestamp } = parsed;
-            
+            const { answers, timeLeft, timestamp, grades } = parsed;
+
             // Check if saved progress is recent (within 24 hours)
             const isRecent = !timestamp || (Date.now() - timestamp < 24 * 60 * 60 * 1000);
-            
+
             if (isRecent) {
                 // Restore answers
                 userAnswers = answers || {};
-                
+
+                // Restore grading results if available
+                if (grades) {
+                    questionGrades = grades;
+                }
+
                 // Restore timer if applicable
                 if (currentExam.settings.timeLimitSeconds && timeLeft) {
                     timeRemaining = timeLeft;
                 }
-                
+
                 // Update question buttons to show answered questions
                 updateQuestionButtons();
             } else {
@@ -960,6 +1151,7 @@ function checkForSavedProgress() {
         console.error("Failed to load saved progress:", error);
         // Reset to default state
         userAnswers = {};
+        questionGrades = {};
     }
 }
 
@@ -968,10 +1160,11 @@ function saveProgress() {
     try {
         const progress = {
             answers: userAnswers,
+            grades: questionGrades,
             timeLeft: timeRemaining,
             timestamp: Date.now()
         };
-        
+
         localStorage.setItem(`exam_${currentExam.id}_progress`, JSON.stringify(progress));
     } catch (error) {
         console.error("Failed to save progress:", error);

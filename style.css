@@ -609,6 +609,101 @@ button:disabled {
     color: #e2e8f0;
 }
 
+/* Grading Results */
+.grading-result {
+    margin-top: var(--space-md);
+    padding: var(--space-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    animation: fade-in 0.3s ease-in-out;
+}
+
+.grading-result.hidden {
+    display: none;
+}
+
+.grading-loading {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.grading-result-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    line-height: var(--line-height-relaxed);
+}
+
+.grading-icon {
+    font-size: var(--font-size-lg);
+}
+
+.grading-status {
+    font-weight: 600;
+    font-size: var(--font-size-base);
+}
+
+.grading-points {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-left: auto;
+}
+
+.grading-model {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    padding: 2px 8px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+}
+
+.grading-comment {
+    width: 100%;
+    margin: var(--space-sm) 0 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.grading-correct {
+    border-left: 4px solid var(--success-color);
+    background: rgba(40, 167, 69, 0.08);
+}
+
+.grading-incorrect {
+    border-left: 4px solid var(--error-color);
+    background: rgba(220, 53, 69, 0.08);
+}
+
+[data-theme="dark"] .grading-result {
+    background: #1e293b;
+}
+
+[data-theme="dark"] .grading-correct {
+    background: rgba(40, 167, 69, 0.15);
+}
+
+[data-theme="dark"] .grading-incorrect {
+    background: rgba(220, 53, 69, 0.15);
+}
+
+[data-theme="dark"] .grading-model {
+    background: #374151;
+}
+
+/* Question navigation button grading states */
+.q-btn.grade-correct {
+    background: var(--success-color);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.q-btn.grade-incorrect {
+    background: var(--error-color);
+    color: white;
+    border-color: var(--error-color);
+}
+
 /*------------------------------------------------------------------
 [8. Exam Page]
 */
