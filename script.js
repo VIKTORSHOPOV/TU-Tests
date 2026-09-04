@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (document.querySelector('.exam-page')) {
         initializeExamPage();
     }
-    
+
     // Initialize dark mode toggle
     initializeDarkModeToggle();
 });
@@ -34,27 +34,27 @@ function initializeDarkModeToggle() {
     toggleButton.id = 'dark-mode-toggle';
     toggleButton.setAttribute('aria-label', 'Toggle dark mode');
     toggleButton.innerHTML = '<span class="toggle-icon">🌙</span>';
-    
+
     // Append to body
     document.body.appendChild(toggleButton);
-    
+
     // Check for saved preference or use system preference
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+
     if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
         document.documentElement.setAttribute('data-theme', 'dark');
         toggleButton.innerHTML = '<span class="toggle-icon">☀️</span>';
     }
-    
+
     // Add click event listener
     toggleButton.addEventListener('click', () => {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
+
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-        
+
         // Update icon
         toggleButton.innerHTML = newTheme === 'dark' ? '<span class="toggle-icon">☀️</span>' : '<span class="toggle-icon">🌙</span>';
     });
@@ -93,19 +93,19 @@ async function fetchExam(examId) {
 // Initialize the index page with exam selection
 async function initializeIndexPage() {
     const examListContainer = document.getElementById('exam-list');
-    
+
     try {
         // Fetch exams from API
         examsData = await fetchExams();
-        
+
         // Clear loading message
         examListContainer.innerHTML = '';
-        
+
         if (examsData.length === 0) {
             examListContainer.innerHTML = '<div class="error-message">Няма налични изпити.</div>';
             return;
         }
-        
+
         // Group exams by category
         const categories = {};
         examsData.forEach(exam => {
@@ -115,7 +115,7 @@ async function initializeIndexPage() {
             }
             categories[category].push(exam);
         });
-        
+
         // Add collapse/expand controls in utility bar
         const utilityBar = document.createElement('div');
         utilityBar.className = 'utility-bar';
@@ -136,10 +136,10 @@ async function initializeIndexPage() {
         Object.keys(categories).sort().forEach(category => {
             const courseColumn = document.createElement('div');
             courseColumn.className = 'course-column';
-            
+
             const categorySection = document.createElement('div');
             categorySection.className = 'category-section';
-            
+
             const categoryHeader = document.createElement('div');
             categoryHeader.className = 'category-header collapsed';
             const count = categories[category].length;
@@ -162,13 +162,13 @@ async function initializeIndexPage() {
                     categoryContentWrapper.classList.remove('expanded');
                 }
             });
-            
+
             const categoryContentWrapper = document.createElement('div');
             categoryContentWrapper.className = 'category-content-wrapper';
-            
+
             const categoryContent = document.createElement('div');
             categoryContent.className = 'category-content';
-            
+
             // Create exam cards for this category
             categories[category].forEach(exam => {
                 const examCard = document.createElement('div');
@@ -180,16 +180,16 @@ async function initializeIndexPage() {
                 `;
                 categoryContent.appendChild(examCard);
             });
-            
+
             categoryContentWrapper.appendChild(categoryContent);
             categorySection.appendChild(categoryHeader);
             categorySection.appendChild(categoryContentWrapper);
             courseColumn.appendChild(categorySection);
             courseColumns.appendChild(courseColumn);
         });
-        
+
         examListContainer.appendChild(courseColumns);
-        
+
         // Collapse/expand all buttons
         document.getElementById('collapse-all').addEventListener('click', () => {
             document.querySelectorAll('.category-header').forEach(header => {
@@ -199,7 +199,7 @@ async function initializeIndexPage() {
                 wrapper.classList.remove('expanded');
             });
         });
-        
+
         document.getElementById('expand-all').addEventListener('click', () => {
             document.querySelectorAll('.category-header').forEach(header => {
                 header.classList.remove('collapsed');
@@ -208,7 +208,7 @@ async function initializeIndexPage() {
                 wrapper.classList.add('expanded');
             });
         });
-        
+
         // Add event listeners to start buttons
         document.querySelectorAll('.start-btn').forEach(button => {
             button.addEventListener('click', (e) => {
@@ -234,22 +234,22 @@ async function initializeExamPage() {
     try {
         // Get selected exam ID from localStorage
         const selectedExamId = localStorage.getItem('selectedExamId');
-        
+
         if (!selectedExamId) {
             // If no exam selected, redirect to index page
             window.location.href = 'index.html';
             return;
         }
-        
+
         // Fetch exam data from API (without correct answers)
         currentExam = await fetchExam(selectedExamId);
-        
+
         if (!currentExam) {
             // If exam not found, redirect to index page
             window.location.href = 'index.html';
             return;
         }
-        
+
         // Check if exam requires authentication
         if (currentExam.passwordHash) {
             // Check if user is authenticated for this exam
@@ -260,16 +260,16 @@ async function initializeExamPage() {
                 return;
             }
         }
-        
+
         // Cache DOM elements
         cacheDomElements();
-        
+
         // Load exam data
         loadExam();
-        
+
         // Add event listeners
         addExamEventListeners();
-        
+
         // Check for saved progress
         checkForSavedProgress();
     } catch (error) {
@@ -310,23 +310,23 @@ function loadExam() {
     try {
         // Set exam title
         domElements.examTitle.textContent = currentExam.title;
-        
+
         // Shuffle questions if needed
         let questions = [...currentExam.questions];
         if (currentExam.settings.shuffleQuestions) {
             questions = shuffleArray(questions);
         }
         currentExam.questions = questions;
-        
+
         // Create question navigation buttons
         createQuestionButtons();
-        
+
         // Initialize timer if needed
         initializeTimer();
-        
+
         // Load first question
         loadQuestion(0);
-        
+
         // Update question counter
         updateQuestionCounter();
     } catch (error) {
@@ -343,7 +343,7 @@ function loadExam() {
 // Create question navigation buttons
 function createQuestionButtons() {
     domElements.questionButtons.innerHTML = '';
-    
+
     currentExam.questions.forEach((question, index) => {
         const button = document.createElement('button');
         button.className = 'q-btn';
@@ -353,10 +353,10 @@ function createQuestionButtons() {
             saveCurrentAnswer();
             loadQuestion(index);
         });
-        
+
         domElements.questionButtons.appendChild(button);
     });
-    
+
     // Highlight first question button
     updateQuestionButtons();
 }
@@ -367,11 +367,11 @@ function initializeTimer() {
         timeRemaining = currentExam.settings.timeLimitSeconds;
         domElements.timer.classList.remove('hidden');
         updateTimerDisplay();
-        
+
         examTimer = setInterval(() => {
             timeRemaining--;
             updateTimerDisplay();
-            
+
             if (timeRemaining <= 0) {
                 clearInterval(examTimer);
                 submitExam();
@@ -384,9 +384,9 @@ function initializeTimer() {
 function updateTimerDisplay() {
     const minutes = Math.floor(timeRemaining / 60);
     const seconds = timeRemaining % 60;
-    
+
     domElements.timeValue.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    
+
     // Reset and add warning classes
     domElements.timer.classList.remove('danger', 'warning');
     if (timeRemaining < 60) {
@@ -400,19 +400,19 @@ function updateTimerDisplay() {
 function loadQuestion(index) {
     currentQuestionIndex = index;
     const question = currentExam.questions[index];
-    
+
     // Update question counter
     updateQuestionCounter();
-    
+
     // Update navigation buttons
     updateQuestionButtons();
     updateNavigationButtons();
-    
+
     // Create question content
     let questionHTML = `
         <div class="question-prompt">${question.prompt}</div>
     `;
-    
+
     // Create different input types based on question type
     if (question.type === 'single') {
         questionHTML += createSingleChoiceHTML(question, index);
@@ -421,7 +421,7 @@ function loadQuestion(index) {
     } else if (question.type === 'open') {
         questionHTML += createOpenEndedHTML(question, index);
     }
-    
+
     domElements.questionContent.innerHTML = questionHTML;
 
     const askAiBtn = document.createElement('button');
@@ -453,14 +453,14 @@ function loadQuestion(index) {
 // Create HTML for single choice questions
 function createSingleChoiceHTML(question, questionIndex) {
     let choices = [...question.choices];
-    
+
     // Shuffle choices if needed
     if (currentExam.settings.shuffleChoices) {
         choices = shuffleArray(choices);
     }
-    
+
     let html = `<ul class="choices-list" role="radiogroup" aria-labelledby="question-${questionIndex}-prompt">`;
-    
+
     choices.forEach((choice, idx) => {
         const choiceId = `q${questionIndex}-choice-${choice.id}`;
         html += `
@@ -470,7 +470,7 @@ function createSingleChoiceHTML(question, questionIndex) {
             </li>
         `;
     });
-    
+
     html += '</ul>';
     return html;
 }
@@ -478,14 +478,14 @@ function createSingleChoiceHTML(question, questionIndex) {
 // Create HTML for multiple choice questions
 function createMultipleChoiceHTML(question, questionIndex) {
     let choices = [...question.choices];
-    
+
     // Shuffle choices if needed
     if (currentExam.settings.shuffleChoices) {
         choices = shuffleArray(choices);
     }
-    
+
     let html = `<ul class="choices-list" role="group" aria-labelledby="question-${questionIndex}-prompt">`;
-    
+
     choices.forEach(choice => {
         const choiceId = `q${questionIndex}-choice-${choice.id}`;
         html += `
@@ -495,7 +495,7 @@ function createMultipleChoiceHTML(question, questionIndex) {
             </li>
         `;
     });
-    
+
     html += '</ul>';
     return html;
 }
@@ -522,16 +522,16 @@ function updateQuestionCounter() {
 // Update question navigation buttons
 function updateQuestionButtons() {
     const buttons = domElements.questionButtons.querySelectorAll('.q-btn');
-    
+
     buttons.forEach((button, index) => {
         // Remove all classes first
         button.classList.remove('current', 'answered');
-        
+
         // Add appropriate classes
         if (index === currentQuestionIndex) {
             button.classList.add('current');
         }
-        
+
         if (userAnswers[index] !== undefined) {
             button.classList.add('answered');
         }
@@ -542,10 +542,10 @@ function updateQuestionButtons() {
 function updateNavigationButtons() {
     // Disable/enable previous button
     domElements.prevBtn.disabled = currentQuestionIndex === 0;
-    
+
     // Disable/enable next button
     domElements.nextBtn.disabled = currentQuestionIndex === currentExam.questions.length - 1;
-    
+
     // Show/hide submit button
     if (currentQuestionIndex === currentExam.questions.length - 1) {
         domElements.submitExam.style.display = 'block';
@@ -641,14 +641,14 @@ function addExamEventListeners() {
             const confirmed = confirm('Сигурни ли сте, че искате да се върнете към списъка с изпити? Текущият напредък НЕ ще бъде запазен.');
             if (!confirmed) return;
         }
-        
+
         // Reset exam state before leaving
         resetExamState();
-        
+
         // Navigate back to index page without saving progress
         window.location.href = 'index.html';
     });
-    
+
     // Previous button
     domElements.prevBtn.addEventListener('click', () => {
         saveCurrentAnswer();
@@ -656,7 +656,7 @@ function addExamEventListeners() {
             loadQuestion(currentQuestionIndex - 1);
         }
     });
-    
+
     // Next button
     domElements.nextBtn.addEventListener('click', () => {
         saveCurrentAnswer();
@@ -664,19 +664,19 @@ function addExamEventListeners() {
             loadQuestion(currentQuestionIndex + 1);
         }
     });
-    
+
     // Submit button
     domElements.submitExam.addEventListener('click', () => {
         saveCurrentAnswer();
-        
+
         // Confirm submission
         const confirmed = confirm('Сигурни ли сте, че искате да предадете изпита? Не можете да променяте отговорите си след предаване.');
-        
+
         if (confirmed) {
             submitExam();
         }
     });
-    
+
     // Character counter for open-ended questions
     domElements.questionContent.addEventListener('input', (e) => {
         if (e.target.tagName === 'TEXTAREA') {
@@ -687,13 +687,13 @@ function addExamEventListeners() {
             }
         }
     });
-    
+
     // Review answers button
     domElements.reviewAnswers.addEventListener('click', () => {
         domElements.resultsSection.classList.add('hidden');
         loadQuestion(0);
     });
-    
+
     // Retake exam button
     domElements.retakeExam.addEventListener('click', () => {
         // Reset user answers and grades
@@ -737,7 +737,8 @@ async function submitExam() {
                     body: JSON.stringify({
                         questionText: question.prompt,
                         userAnswer: userAnswers[index],
-                        correctAnswer: question.correctAnswer,
+                        examId: currentExam.id,
+                        questionIndex: index,
                         scoring: {
                             type: question.scoring?.type || 'fuzzy',
                             language: question.scoring?.language || 'csharp',
@@ -867,7 +868,8 @@ async function gradeOpenQuestion(questionIndex, question) {
             body: JSON.stringify({
                 questionText: question.prompt,
                 userAnswer: userAnswers[questionIndex],
-                correctAnswer: question.correctAnswer,
+                examId: currentExam.id,
+                questionIndex: questionIndex,
                 scoring: {
                     type: question.scoring?.type || 'fuzzy',
                     language: question.scoring?.language || 'csharp',
@@ -931,6 +933,18 @@ function fallbackGradeOpenQuestion(question, userAnswer) {
 
     if (!userAnswer || userAnswer.trim() === '') {
         return { isCorrect: false, points: 0, maxPoints: question.points, comment: 'Липсващ отговор', modelUsed: 'fallback' };
+    }
+
+    // The client never receives correctAnswer (sanitized exam strips it for security).
+    // Without it, the fallback cannot determine correctness.
+    if (!question.correctAnswer) {
+        return {
+            isCorrect: false,
+            points: 0,
+            maxPoints: question.points,
+            comment: 'Отговорът не можа да бъде оценен. Моля, опитайте отново.',
+            modelUsed: 'fallback'
+        };
     }
 
     if (scoring.type === 'code') {
@@ -1110,29 +1124,29 @@ async function askAI(buttonElement, questionText, optionsArray) {
 function displayResults(result) {
     // Display raw score
     domElements.rawScore.textContent = `Резултат: ${result.rawScore.toFixed(1)} / ${result.maxScore.toFixed(1)}`;
-    
+
     // Display percentage
     domElements.percentageScore.textContent = `Процент: ${result.percentage.toFixed(1)}%`;
-    
+
     // Display pass/fail status
     domElements.passFail.textContent = result.passed ? 'ДА' : 'НЕ';
     domElements.passFail.className = result.passed ? 'pass' : 'fail';
-    
+
     // Display question breakdown
     domElements.questionBreakdown.innerHTML = '';
-    
+
     result.questionResults.forEach(resultItem => {
         // Find question by ID (not by index) to handle shuffled questions correctly
         const question = currentExam.questions.find(q => q.id === resultItem.questionId);
-        
+
         if (!question) {
             console.error('Question not found:', resultItem.questionId);
             return;
         }
-        
+
         const resultElement = document.createElement('div');
         resultElement.className = `question-result ${resultItem.isCorrect ? 'correct' : 'incorrect'}`;
-        
+
         const resultHTML = `
             <div class="result-question">
                 <div class="result-question-header">
@@ -1148,7 +1162,7 @@ function displayResults(result) {
                 </div>
             </div>
         `;
-        
+
         resultElement.innerHTML = resultHTML;
 
         const askAiBtn = document.createElement('button');
@@ -1160,7 +1174,7 @@ function displayResults(result) {
 
         domElements.questionBreakdown.appendChild(resultElement);
     });
-    
+
     // Show results section
     domElements.resultsSection.classList.remove('hidden');
 }

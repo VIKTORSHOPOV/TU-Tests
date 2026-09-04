@@ -1,4 +1,5 @@
 const { GoogleGenAI } = require('@google/genai');
+const { getExamById } = require('./data/exams');
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -40,9 +41,27 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
-  const { questionText, userAnswer, correctAnswer, scoring } = body;
+  const { questionText, userAnswer, correctAnswer, scoring, examId, questionIndex } = body;
 
-  if (!questionText || !correctAnswer) {
+  // Try to look up the exam and question server-side so the client
+  // never needs to send (or even know) the correctAnswer.
+  let resolvedCorrectAnswer = correctAnswer;
+  let resolvedScoring = scoring;
+
+  if (examId && questionIndex !== undefined && questionIndex !== null) {
+    const exam = getExamById(examId);
+    const question = exam?.questions?.[questionIndex];
+    if (question) {
+      resolvedCorrectAnswer = question.correctAnswer;
+      resolvedScoring = {
+        ...(resolvedScoring || {}),
+        ...question.scoring,
+        points: question.points
+      };
+    }
+  }
+
+  if (!questionText || !resolvedCorrectAnswer) {
     return {
       statusCode: 400,
       headers: CORS_HEADERS,
@@ -50,7 +69,7 @@ exports.handler = async (event) => {
     };
   }
 
-  const isCode = scoring?.type === 'code';
+  const isCode = resolvedScoring?.type === 'code';
 
   const gradingPrompt = isCode
     ? `Ти си академичен асистент, специализиран в оценяване на студентски код. Оцени дали student's_code е правилно спрямо expected_code.
@@ -59,7 +78,7 @@ Student's code:
 ${userAnswer || '(празен отговор)'}
 
 Expected code:
-${correctAnswer}
+${resolvedCorrectAnswer}
 
 Формат на отговор (ЗАДЪЛЖИТЕЛНО):
 ### Оценка
@@ -72,14 +91,14 @@ ${correctAnswer}
 CAUTION: Трябва ДА изчислиш точките! Върни число между 0 и maxPoints.
 При грешен отговор - 0 точки.
 При верен отговор - пълните точки.
-maxPoints: ${scoring?.points || 1}`
+maxPoints: ${resolvedScoring?.points || 1}`
     : `Ти си академичен асистент, специализиран в оценяване на студентски отговори на въпроси. Оцени student's_answer спрямо expected_answer.
 
 Student's answer:
 ${userAnswer || '(празен отговор)'}
 
 Expected answer:
-${correctAnswer}
+${resolvedCorrectAnswer}
 
 Формат на отговор (ЗАДЪЛЖИТЕЛНО):
 ### Оценка
@@ -92,38 +111,34 @@ ${correctAnswer}
 CAUTION: Трябва ДА изчислиш точките! Върни число между 0 и maxPoints.
 При грешен отговор - 0 точки.
 При верен отговор - пълните точки.
-maxPoints: ${scoring?.points || 1}`;
+maxPoints: ${resolvedScoring?.points || 1}`;
 
-  const callModelWithTimeout = (modelName) => {
-    return new Promise(async (resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('MODEL_TIMEOUT')), 2000);
+  const callModelWithTimeout = async (modelName) => {
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('MODEL_TIMEOUT')), 2000)
+    );
 
-      try {
-        const config = { maxOutputTokens: 2048 };
-        if (modelName.includes('3.5') || modelName.includes('3.6')) {
-          config.thinkingConfig = { thinkingLevel: 'MINIMAL' };
-        }
+    const config = { maxOutputTokens: 2048 };
+    if (modelName.includes('3.5') || modelName.includes('3.1')) {
+      config.thinkingConfig = { thinkingLevel: 'low' };
+    } else if (modelName.includes('2.5') && !modelName.includes('lite')) {
+      config.thinkingConfig = { thinkingBudget: 0 };
+    }
 
-        const response = await ai.models.generateContent({
-          model: modelName,
-          contents: gradingPrompt,
-          config
-        });
+    const callPromise = ai.models.generateContent({
+      model: modelName,
+      contents: gradingPrompt,
+      config
+    }).then(response => response.text);
 
-        clearTimeout(timer);
-        resolve(response.text);
-      } catch (err) {
-        clearTimeout(timer);
-        reject(err);
-      }
-    });
+    return Promise.race([callPromise, timeoutPromise]);
   };
 
   for (const modelName of MODELS) {
     try {
       const result = await callModelWithTimeout(modelName);
       if (result) {
-        const parsed = parseGradingResult(result, scoring?.points || 1);
+        const parsed = parseGradingResult(result, resolvedScoring?.points || 1);
         return {
           statusCode: 200,
           headers: CORS_HEADERS,
@@ -159,16 +174,16 @@ function parseGradingResult(text, maxPoints) {
 
   for (const line of lines) {
     const trimmed = line.trim();
-    if (trimmed.startsWith('### Оценка') || trimmed.startsWith('### Оценка')) {
-      currentSection = ' оценка';
-    } else if (trimmed.startsWith('### Коментар') || trimmed.startsWith('### Коментар')) {
-      currentSection = ' коментар';
-    } else if (trimmed.startsWith('### Точки') || trimmed.startsWith('### Точки')) {
-      currentSection = ' точки';
-    } else if (currentSection === 'оценка' && (trimmed === 'ВЕРНО' || trimmed === 'ВЕРНО')) {
+    if (trimmed.startsWith('### Оценка')) {
+      currentSection = 'оценка';
+    } else if (trimmed.startsWith('### Коментар')) {
+      currentSection = 'коментар';
+    } else if (trimmed.startsWith('### Точки')) {
+      currentSection = 'точки';
+    } else if (currentSection === 'оценка' && trimmed === 'ВЕРНО') {
       result.isCorrect = true;
       result.points = maxPoints;
-    } else if (currentSection === 'оценка' && (trimmed === 'ГРЕШНО' || trimmed === 'ГРЕШНО')) {
+    } else if (currentSection === 'оценка' && trimmed === 'ГРЕШНО') {
       result.isCorrect = false;
       result.points = 0;
     } else if (currentSection === 'коментар' && trimmed) {

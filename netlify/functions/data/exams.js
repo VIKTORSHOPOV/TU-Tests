@@ -807,7 +807,7 @@ while ((cmd = Console.ReadLine()) != "Край") {
       }
     ]
   },
-  
+
   {
     id: "exam-networksecurity-2",
     category: "3.1 курс",
@@ -2006,7 +2006,7 @@ while ((cmd = Console.ReadLine()) != "Край") {
       }
     ]
   },
-  
+
   {
     id: "exam-computer-modeling-1",
 category: "3.2 курс",
@@ -3066,7 +3066,8 @@ function getSanitizedExam(examId) {
       type: q.type,
       points: q.points,
       prompt: q.prompt,
-      choices: q.choices
+      choices: q.choices,
+      scoring: q.scoring
       // Note: correctAnswer is intentionally omitted
     }))
   };
@@ -3076,11 +3077,11 @@ function getSanitizedExam(examId) {
 function verifyPassword(examId, passwordHash) {
   const exam = getExamById(examId);
   if (!exam) return { found: false, verified: false };
-  
+
   if (!exam.passwordHash) {
     return { found: true, verified: true, noPassword: true };
   }
-  
+
   const verified = constantTimeCompare(passwordHash, exam.passwordHash);
   return { found: true, verified };
 }
@@ -3090,12 +3091,12 @@ function constantTimeCompare(a, b) {
   if (a.length !== b.length) {
     return false;
   }
-  
+
   let result = 0;
   for (let i = 0; i < a.length; i++) {
     result |= a.charCodeAt(i) ^ b.charCodeAt(i);
   }
-  
+
   return result === 0;
 }
 

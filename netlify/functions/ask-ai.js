@@ -53,29 +53,25 @@ exports.handler = async (event) => {
 
   const prompt = promptParts.join('\n');
 
-  const callModelWithTimeout = (modelName) => {
-    return new Promise(async (resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('MODEL_TIMEOUT')), 5500);
+  const callModelWithTimeout = async (modelName) => {
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('MODEL_TIMEOUT')), 5500)
+    );
 
-      try {
-        const config = { maxOutputTokens: 4096 };
-        if (modelName.includes('3.5') || modelName.includes('3.6')) {
-          config.thinkingConfig = { thinkingLevel: 'MINIMAL' };
-        }
+    const config = { maxOutputTokens: 4096 };
+    if (modelName.includes('3.5') || modelName.includes('3.1')) {
+      config.thinkingConfig = { thinkingLevel: 'low' };
+    } else if (modelName.includes('2.5') && !modelName.includes('lite')) {
+      config.thinkingConfig = { thinkingBudget: 0 };
+    }
 
-        const response = await ai.models.generateContent({
-          model: modelName,
-          contents: prompt,
-          config
-        });
+    const callPromise = ai.models.generateContent({
+      model: modelName,
+      contents: prompt,
+      config
+    }).then(response => response.text);
 
-        clearTimeout(timer);
-        resolve(response.text);
-      } catch (err) {
-        clearTimeout(timer);
-        reject(err);
-      }
-    });
+    return Promise.race([callPromise, timeoutPromise]);
   };
 
   for (const modelName of MODELS) {
