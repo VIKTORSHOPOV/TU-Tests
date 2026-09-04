@@ -750,11 +750,19 @@ async function askAI(buttonElement, questionText, optionsArray) {
         });
 
         if (!response.ok) {
+            if (response.status === 504) {
+                throw new Error('The request timed out. Please try again.');
+            }
             const text = await response.text();
             throw new Error(text || 'Грешка при зареждане на обяснение');
         }
 
-        const data = await response.json();
+        let data;
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error('Некоректен отговор от сървъра. Моля, опитайте отново.');
+        }
 
         const raw = data.explanation || '';
         const withLineBreaks = raw.replace(/\n/g, '<br>');

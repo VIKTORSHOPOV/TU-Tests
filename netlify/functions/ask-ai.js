@@ -4,7 +4,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const MODELS = [
   'gemini-3.5-flash-lite',
-  'gemini-3.1-flash-lite'
+  'gemini-2.5-flash'
 ];
 
 exports.handler = async (event) => {
@@ -53,54 +53,40 @@ exports.handler = async (event) => {
     const prompt = promptParts.join('\n');
 
     for (const modelName of MODELS) {
-      const maxRetries = 2;
-
-      for (let attempt = 0; attempt <= maxRetries; attempt++) {
-        try {
-          const response = await ai.models.generateContent({
-            model: modelName,
-            contents: prompt,
-            config: {
-              maxOutputTokens: 2048,
-              thinkingConfig: {
-                thinkingLevel: 'MINIMAL'
-              }
+      try {
+        const response = await ai.models.generateContent({
+          model: modelName,
+          contents: prompt,
+          config: {
+            maxOutputTokens: 2048,
+            thinkingConfig: {
+              thinkingLevel: 'MINIMAL'
             }
-          });
-
-          const explanation = response.text || 'Неуспешно генериране на обяснение.';
-
-          return {
-            statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ explanation })
-          };
-        } catch (err) {
-          const isOverloaded = err.status === 503 || err.message?.includes('503') || err.message?.includes('UNAVAILABLE');
-          const isRateLimited = err.status === 429 || err.message?.includes('429');
-
-          console.error(`Gemini SDK error [${modelName}] (attempt ${attempt + 1}/${maxRetries + 1}):`, err.message || err);
-
-          // Exponential backoff for temporary spikes
-          if ((isOverloaded || isRateLimited) && attempt < maxRetries) {
-            const jitter = Math.random() * 1000;
-            const delayMs = Math.pow(2, attempt) * 2000 + jitter;
-            await new Promise(resolve => setTimeout(resolve, delayMs));
-            continue;
           }
+        });
 
-          // Fallback to secondary model if primary remains overloaded
-          if (isOverloaded) {
-            console.warn(`Model ${modelName} overloaded. Switching to fallback model...`);
-            break;
-          }
+        const explanation = response.text || 'Неуспешно генериране на обяснение.';
 
-          return {
-            statusCode: 500,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ error: 'Failed to get AI explanation' })
-          };
+        return {
+          statusCode: 200,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ explanation })
+        };
+      } catch (err) {
+        const isOverloaded = err.status === 503 || err.message?.includes('503') || err.message?.includes('UNAVAILABLE');
+
+        console.error(`Gemini SDK error [${modelName}]:`, err.message || err);
+
+        if (isOverloaded) {
+          console.warn(`Model ${modelName} overloaded. Switching to fallback model...`);
+          continue;
         }
+
+        return {
+          statusCode: 500,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ error: 'Failed to get AI explanation' })
+        };
       }
     }
 
