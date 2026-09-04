@@ -765,7 +765,19 @@ async function askAI(buttonElement, questionText, optionsArray) {
         const raw = data.explanation || '';
         const withLineBreaks = raw.replace(/\n/g, '<br>');
         const withHeadings = withLineBreaks.replace(/### (.*?)<br>/g, '<strong class="ai-subheading">$1</strong><br>');
+
+        const modelUsed = data.modelUsed;
+        const formattedModelName = modelUsed
+          ? modelUsed
+              .replace('gemini-', 'Модел: Gemini ')
+              .replace('-flash-lite', ' Flash Lite')
+              .replace('-flash', ' Flash')
+          : null;
+
         explanationContainer.innerHTML = `<div class="ai-response-inner">${withHeadings}</div>`;
+        if (formattedModelName) {
+          explanationContainer.insertAdjacentHTML('beforeend', `<div class="ai-model-badge" style="font-size: 0.8rem; opacity: 0.7; margin-top: 12px; border-top: 1px solid #ccc; padding-top: 6px;">${formattedModelName}</div>`);
+        }
     } catch (error) {
         console.error('Ask AI error:', error);
         explanationContainer.innerHTML = `<div class="ai-response-inner ai-error">❌ ${error.message}</div>`;
