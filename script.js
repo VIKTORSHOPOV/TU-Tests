@@ -749,11 +749,12 @@ async function askAI(buttonElement, questionText, optionsArray) {
             body: JSON.stringify({ questionText, options: Array.isArray(optionsArray) ? optionsArray : [] })
         });
 
-        const data = await response.json();
-
         if (!response.ok) {
-            throw new Error(data.error || 'Грешка при зареждане на обяснение');
+            const text = await response.text();
+            throw new Error(text || 'Грешка при зареждане на обяснение');
         }
+
+        const data = await response.json();
 
         const raw = data.explanation || '';
         const withLineBreaks = raw.replace(/\n/g, '<br>');
