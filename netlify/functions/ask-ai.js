@@ -56,9 +56,9 @@ exports.handler = async (event) => {
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
-              maxOutputTokens: 512,
+              maxOutputTokens: 2048, // Increased to allow space for thinking + answer output
               thinkingConfig: {
-                thinkingLevel: 'minimal'
+                thinkingLevel: 'MINIMAL' // Fixed uppercase string enum value
               }
             }
           })
@@ -67,8 +67,11 @@ exports.handler = async (event) => {
 
       if (response.ok) {
         const data = await response.json();
-        const explanation =
-          data.candidates?.[0]?.content?.parts?.[0]?.text || 'Неуспешно генериране на обяснение.';
+        
+        // Extract answer text while skipping internal thought parts
+        const parts = data.candidates?.[0]?.content?.parts || [];
+        const answerPart = parts.find(p => p.text && !p.thought) || parts[parts.length - 1];
+        const explanation = answerPart?.text || 'Неуспешно генериране на обяснение.';
 
         return {
           statusCode: 200,
