@@ -13,6 +13,15 @@ const domElements = {};
 // API base URL - uses relative path for Netlify Functions
 const API_BASE = '/.netlify/functions';
 
+// Rate limit: 15 AI grading requests per minute → 1 request every 4+ seconds.
+// Use 4.5s to stay safely under the limit (13.3 req/min).
+const GRADING_RATE_LIMIT_DELAY_MS = 4500;
+
+// Sleep helper for rate-limiting between AI grading requests
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
     // Check if we're on the index page or exam page
@@ -725,9 +734,13 @@ async function submitExam() {
             .map((q, i) => ({ question: q, index: i }))
             .filter(item => item.question.type === 'open');
 
+        let gradedCount = 0;
+        const totalOpen = openQuestions.length;
+
         for (const item of openQuestions) {
             const { question, index } = item;
             try {
+                domElements.questionContent.innerHTML = `<div class="loading">Оценяване на отговори... (${gradedCount}/${totalOpen})</div>`;
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 7000);
 
@@ -766,6 +779,13 @@ async function submitExam() {
                 console.warn(`AI grading failed for question ${index}, using fallback:`, err);
                 // Fallback to built-in scoring
                 questionGrades[index] = fallbackGradeOpenQuestion(question, userAnswers[index]);
+            }
+
+            gradedCount++;
+
+            // Rate-limit break: wait between grading requests to stay under 15 req/min
+            if (gradedCount < totalOpen) {
+                await sleep(GRADING_RATE_LIMIT_DELAY_MS);
             }
         }
 
