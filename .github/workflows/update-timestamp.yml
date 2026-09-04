@@ -1,0 +1,30 @@
+name: Update Last Updated Timestamp
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  update-timestamp:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update last updated timestamp
+        run: |
+          TIMESTAMP=$(date +"%d.%m.%Y %H:%M")
+          sed -i 's|<span id="update-date">[^<]*</span>|<span id="update-date">'"${TIMESTAMP}"'</span>|' exam.html
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add exam.html
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: update last updated timestamp [skip ci]"
+            git push
+          fi
