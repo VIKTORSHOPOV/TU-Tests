@@ -4,7 +4,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const MODELS = [
   'gemini-3.5-flash-lite',
-  'gemini-2.5-flash'
+  'gemini-3.1-flash-lite'
 ];
 
 const FUNCTION_TIMEOUT_MS = 8500;
