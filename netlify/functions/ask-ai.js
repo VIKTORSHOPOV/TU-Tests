@@ -5,7 +5,8 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const MODELS = [
   'gemini-3.5-flash-lite',
   'gemini-3.1-flash-lite',
-  
+  'gemini-2.5-flash-lite',
+  'gemini-2.5-flash'
 ];
 
 exports.handler = async (event) => {
@@ -54,11 +55,11 @@ exports.handler = async (event) => {
 
   const callModelWithTimeout = (modelName) => {
     return new Promise(async (resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('MODEL_TIMEOUT')), 3800);
+      const timer = setTimeout(() => reject(new Error('MODEL_TIMEOUT')), 5000);
 
       try {
         const config = { maxOutputTokens: 2048 };
-        if (modelName.includes('3.5')) {
+        if (modelName.includes('3.5') || modelName.includes('3.6')) {
           config.thinkingConfig = { thinkingLevel: 'MINIMAL' };
         }
 
