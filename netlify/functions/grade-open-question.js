@@ -96,7 +96,7 @@ maxPoints: ${scoring?.points || 1}`;
 
   const callModelWithTimeout = (modelName) => {
     return new Promise(async (resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('MODEL_TIMEOUT')), 5500);
+      const timer = setTimeout(() => reject(new Error('MODEL_TIMEOUT')), 2000);
 
       try {
         const config = { maxOutputTokens: 2048 };

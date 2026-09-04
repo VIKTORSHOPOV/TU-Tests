@@ -835,9 +835,19 @@ async function gradeOpenQuestion(questionIndex, question) {
         console.log('Grade fallback triggered');
         if (graded) return;
         graded = true;
-        const fallbackResult = fallbackGradeOpenQuestion(question, userAnswers[questionIndex]);
-        questionGrades[questionIndex] = fallbackResult;
-        showGradingResult(questionIndex, fallbackResult);
+        try {
+            const fallbackResult = fallbackGradeOpenQuestion(question, userAnswers[questionIndex]);
+            // Ensure maxPoints is set so UI shows correct fraction
+            if (fallbackResult.maxPoints === undefined) {
+                fallbackResult.maxPoints = question.points;
+            }
+            questionGrades[questionIndex] = fallbackResult;
+            showGradingResult(questionIndex, fallbackResult);
+        } catch (uiErr) {
+            console.error('Fallback UI error:', uiErr);
+            // Last-resort: clear the spinner so user is never stuck
+            gradingResultEl.innerHTML = '<div class="grading-error">⚠️ Грешка при оценяване. Моля, опитайте отново.</div>';
+        }
     };
 
     const fallbackTimer = setTimeout(fallback, 8000);
@@ -891,6 +901,7 @@ async function gradeOpenQuestion(questionIndex, question) {
 
     } catch (error) {
         console.error('Grading error:', error);
+        clearTimeout(fallbackTimer);
         fallback();
     }
 }
