@@ -728,7 +728,10 @@ async function submitExam() {
         for (const item of openQuestions) {
             const { question, index } = item;
             try {
-        const response = await fetch(`${API_BASE}/grade-open-question`, {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 7000);
+
+                const response = await fetch(`${API_BASE}/grade-open-question`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -740,8 +743,11 @@ async function submitExam() {
                             language: question.scoring?.language || 'csharp',
                             points: question.points
                         }
-                    })
+                    }),
+                    signal: controller.signal
                 });
+
+                clearTimeout(timeoutId);
 
                 if (response.ok) {
                     const data = await response.json();
@@ -824,11 +830,22 @@ async function gradeOpenQuestion(questionIndex, question) {
     gradingResultEl.innerHTML = '<div class="grading-loading">⏳ AI проверява отговора...</div>';
     gradingResultEl.classList.remove('hidden');
 
+    let graded = false;
+    const fallback = () => {
+        if (graded) return;
+        graded = true;
+        const fallbackResult = fallbackGradeOpenQuestion(question, userAnswers[questionIndex]);
+        questionGrades[questionIndex] = fallbackResult;
+        showGradingResult(questionIndex, fallbackResult);
+    };
+
+    setTimeout(fallback, 8000);
+
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        const timeoutId = setTimeout(() => controller.abort(), 7000);
 
-        const response = await fetch('/.netlify/functions/grade-open-question', {
+        const response = await fetch(`${API_BASE}/grade-open-question`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -852,6 +869,7 @@ async function gradeOpenQuestion(questionIndex, question) {
 
         const data = await response.json();
 
+        graded = true;
         questionGrades[questionIndex] = {
             isCorrect: data.isCorrect,
             points: data.points,
@@ -864,10 +882,7 @@ async function gradeOpenQuestion(questionIndex, question) {
 
     } catch (error) {
         console.error('Grading error:', error);
-        // Fallback to stored answer-based scoring
-        const fallbackResult = fallbackGradeOpenQuestion(question, userAnswers[questionIndex]);
-        questionGrades[questionIndex] = fallbackResult;
-        showGradingResult(questionIndex, fallbackResult);
+        fallback();
     }
 }
 
