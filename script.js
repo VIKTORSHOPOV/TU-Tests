@@ -607,6 +607,22 @@ function restoreUserAnswer(index) {
     }
 }
 
+// Reset exam state when leaving or completing
+function resetExamState() {
+    currentExam = null;
+    currentQuestionIndex = 0;
+    userAnswers = {};
+    if (examTimer) {
+        clearInterval(examTimer);
+        examTimer = null;
+    }
+    timeRemaining = 0;
+    // Clear saved progress for current exam
+    if (currentExam && currentExam.id) {
+        localStorage.removeItem(`exam_${currentExam.id}_progress`);
+    }
+}
+
 // Add event listeners for the exam page
 function addExamEventListeners() {
     // Back to exams button
@@ -616,6 +632,9 @@ function addExamEventListeners() {
             const confirmed = confirm('Сигурни ли сте, че искате да се върнете към списъка с изпити? Текущият напредък НЕ ще бъде запазен.');
             if (!confirmed) return;
         }
+        
+        // Reset exam state before leaving
+        resetExamState();
         
         // Navigate back to index page without saving progress
         window.location.href = 'index.html';
@@ -803,7 +822,13 @@ function displayResults(result) {
     domElements.questionBreakdown.innerHTML = '';
     
     result.questionResults.forEach(resultItem => {
-        const question = currentExam.questions[resultItem.questionIndex];
+        // Find question by ID (not by index) to handle shuffled questions correctly
+        const question = currentExam.questions.find(q => q.id === resultItem.questionId);
+        
+        if (!question) {
+            console.error('Question not found:', resultItem.questionId);
+            return;
+        }
         
         const resultElement = document.createElement('div');
         resultElement.className = `question-result ${resultItem.isCorrect ? 'correct' : 'incorrect'}`;
