@@ -55,10 +55,10 @@ exports.handler = async (event) => {
 
   const callModelWithTimeout = (modelName) => {
     return new Promise(async (resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('MODEL_TIMEOUT')), 5000);
+      const timer = setTimeout(() => reject(new Error('MODEL_TIMEOUT')), 5500);
 
       try {
-        const config = { maxOutputTokens: 2048 };
+        const config = { maxOutputTokens: 4096 };
         if (modelName.includes('3.5') || modelName.includes('3.6')) {
           config.thinkingConfig = { thinkingLevel: 'MINIMAL' };
         }
