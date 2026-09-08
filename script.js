@@ -440,13 +440,16 @@ function loadQuestion(index) {
     askAiBtn.addEventListener('click', () => askAI(askAiBtn, question.prompt, options));
     domElements.questionContent.appendChild(askAiBtn);
 
-    // Make entire choice items clickable
+    // Make entire choice items clickable without breaking native input/label clicks
     document.querySelectorAll('.choice-item').forEach(item => {
         item.addEventListener('click', (e) => {
-            // Prevent double-triggering if clicking on input or label
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL') return;
-
             const input = item.querySelector('input');
+            if (!input) return;
+
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL') {
+                return;
+            }
+
             if (input.type === 'radio') {
                 input.checked = true;
             } else if (input.type === 'checkbox') {
