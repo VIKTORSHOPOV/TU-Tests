@@ -233,7 +233,14 @@ function calculateScore(exam, userAnswers) {
 
 // Utility function to normalize code for comparison
 function normalizeCode(code) {
-  if (!code) return '';
+  if (code === null || code === undefined) {
+    return '';
+  }
+
+  if (typeof code !== 'string') {
+    return String(code).trim().replace(/\s+/g, ' ');
+  }
+
   return code.trim().replace(/\s+/g, ' ');
 }
 
