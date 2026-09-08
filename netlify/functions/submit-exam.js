@@ -108,7 +108,11 @@ function calculateScore(exam, userAnswers) {
       // Multiple choice question
       const correctAnswers = question.correctAnswer;
 
-      if (question.scoring && question.scoring.strategy === 'proportional') {
+      if (!Array.isArray(userAnswer) || userAnswer.length === 0) {
+        // No answer provided or invalid format
+        isCorrect = false;
+        earnedPoints = 0;
+      } else if (question.scoring && question.scoring.strategy === 'proportional') {
         // Proportional scoring
         const correctSelections = userAnswer.filter(answer => correctAnswers.includes(answer));
         const incorrectSelections = userAnswer.filter(answer => !correctAnswers.includes(answer));
@@ -131,7 +135,11 @@ function calculateScore(exam, userAnswers) {
       // Open-ended question
       const scoring = question.scoring || { type: 'fuzzy', tolerance: 0.2 };
 
-      if (scoring.type === 'code') {
+      if (userAnswer === null || userAnswer === undefined) {
+        // No answer provided
+        isCorrect = false;
+        earnedPoints = 0;
+      } else if (scoring.type === 'code') {
         // Code question - normalize whitespace and compare
         const normalizedUser = normalizeCode(userAnswer);
         const normalizedCorrect = normalizeCode(question.correctAnswer);
@@ -147,8 +155,8 @@ function calculateScore(exam, userAnswers) {
         let correctAnswersNormalized = correctAnswers;
 
         if (!caseSensitive) {
-          userAnswerNormalized = userAnswer.toLowerCase();
-          correctAnswersNormalized = correctAnswers.map(a => a.toLowerCase());
+          userAnswerNormalized = String(userAnswer).toLowerCase();
+          correctAnswersNormalized = correctAnswers.map(a => String(a).toLowerCase());
         }
 
         isCorrect = correctAnswersNormalized.includes(userAnswerNormalized);
@@ -159,17 +167,17 @@ function calculateScore(exam, userAnswers) {
 
         isCorrect = regexPatterns.some(pattern => {
           const regex = new RegExp(pattern, scoring.caseSensitive ? '' : 'i');
-          return regex.test(userAnswer);
+          return regex.test(String(userAnswer));
         });
 
         earnedPoints = isCorrect ? points : 0;
-      } else if (scoring.type === 'fuzzy') {
-        // Fuzzy match
+      } else if (scoring.type === 'text' || scoring.type === 'fuzzy') {
+        // Text/fuzzy match - use similarity
         const correctAnswers = scoring.acceptableValues || [question.correctAnswer];
         const tolerance = scoring.tolerance || 0.2;
 
         isCorrect = correctAnswers.some(answer => {
-          const similarity = calculateSimilarity(userAnswer, answer);
+          const similarity = calculateSimilarity(String(userAnswer), String(answer));
           return similarity >= tolerance;
         });
 
@@ -231,10 +239,13 @@ function normalizeCode(code) {
 
 // Utility function to calculate similarity between two strings
 function calculateSimilarity(str1, str2) {
-  if (str1 === str2) return 1.0;
+  const s1 = String(str1);
+  const s2 = String(str2);
 
-  const len1 = str1.length;
-  const len2 = str2.length;
+  if (s1 === s2) return 1.0;
+
+  const len1 = s1.length;
+  const len2 = s2.length;
 
   if (len1 === 0 || len2 === 0) return 0.0;
 
@@ -246,7 +257,7 @@ function calculateSimilarity(str1, str2) {
 
   for (let i = 1; i <= len1; i++) {
     for (let j = 1; j <= len2; j++) {
-      const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
+      const cost = s1[i - 1] === s2[j - 1] ? 0 : 1;
       matrix[i][j] = Math.min(
         matrix[i - 1][j] + 1,
         matrix[i][j - 1] + 1,
