@@ -686,6 +686,24 @@ function addExamEventListeners() {
         }
     });
 
+    document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+
+        if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            saveCurrentAnswer();
+            if (currentQuestionIndex < currentExam.questions.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            }
+        } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            saveCurrentAnswer();
+            if (currentQuestionIndex > 0) {
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        }
+    });
+
     // Character counter for open-ended questions
     domElements.questionContent.addEventListener('input', (e) => {
         if (e.target.tagName === 'TEXTAREA') {
