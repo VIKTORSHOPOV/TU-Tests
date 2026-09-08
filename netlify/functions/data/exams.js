@@ -2184,7 +2184,7 @@ category: "3.2 курс",
   "description": "Пълен комбиниран тест по виртуализация, контейнери, облачни услуги и SDN. Включва всички уникални въпроси от Вариант 1 и Вариант 2 за максимална подготовка.",
   "passwordHash": "",
   "settings": {
-    "shuffleQuestions": true,
+    "shuffleQuestions": false,
     "shuffleChoices": false,
     "timeLimitSeconds": 3600,
     "allowImmediateRetry": true,
