@@ -1191,15 +1191,21 @@ function displayResults(result) {
             return;
         }
 
+        const isUnanswered = isQuestionUnanswered(question, resultItem.userAnswer);
+        const resultStatus = isUnanswered ? 'unanswered' : (resultItem.isCorrect ? 'correct' : 'incorrect');
+
         const resultElement = document.createElement('div');
-        resultElement.className = `question-result ${resultItem.isCorrect ? 'correct' : 'incorrect'}`;
+        resultElement.className = `question-result ${resultStatus}`;
+
+        const statusLabel = isUnanswered ? 'Пропуснат' : (resultItem.isCorrect ? 'Верен' : 'Грешен');
+        const statusIcon = isUnanswered ? '⚠️' : (resultItem.isCorrect ? '✅' : '❌');
 
         const resultHTML = `
             <div class="result-question">
                 <div class="result-question-header">
                     <h3>Въпрос ${resultItem.questionIndex + 1}</h3>
-                    <span class="result-status ${resultItem.isCorrect ? 'correct' : 'incorrect'}">
-                        ${resultItem.isCorrect ? 'Верен' : 'Грешен'}
+                    <span class="result-status ${resultStatus}">
+                        ${statusIcon} ${statusLabel}
                     </span>
                 </div>
                 <div class="result-question-content">
@@ -1260,6 +1266,26 @@ function formatUserAnswer(question, userAnswer) {
         }
         return userAnswer.replace(/\n/g, '<br>'); // Convert newlines to <br> tags for display
     }
+}
+
+// Check if a question was not answered
+function isQuestionUnanswered(question, userAnswer) {
+    if (userAnswer === null || userAnswer === undefined) {
+        return true;
+    }
+
+    if (question.type === 'multiple') {
+        if (!Array.isArray(userAnswer)) {
+            return true;
+        }
+        return userAnswer.length === 0;
+    }
+
+    if (question.type === 'open') {
+        return String(userAnswer).trim() === '';
+    }
+
+    return false;
 }
 
 // Format correct answer for display
