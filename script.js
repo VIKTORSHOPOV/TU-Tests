@@ -64,8 +64,8 @@ function initializeDarkModeToggle() {
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
 
-        // Update icon
-        toggleButton.innerHTML = newTheme === 'dark' ? '<span class="toggle-icon">☀️</span>' : '<span class="toggle-icon">🌙</span>';
+    // Update icon
+    toggleButton.innerHTML = newTheme === 'dark' ? '<span class="toggle-icon">☀️</span>' : '<span class="toggle-icon">🌙</span>';
     });
 }
 
