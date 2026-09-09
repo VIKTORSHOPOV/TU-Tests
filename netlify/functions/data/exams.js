@@ -2300,7 +2300,7 @@ category: "3.2 курс",
       "id": "q9",
       "type": "single",
       "points": 1,
-      "prompt": "Кое НЕ Е протокол за връзка със устройства за съхранение (storage)?",
+      "prompt": "Кое от следните НЕ Е протокол, използван за изграждане на SAN (Storage Area Network) мрежа?",
       "choices": [
         { "id": "a", "text": "Fiber Channel" },
         { "id": "b", "text": "SAS" },
@@ -2411,7 +2411,7 @@ category: "3.2 курс",
         { "id": "c", "text": "Tier 1 Gateway" },
         { "id": "d", "text": "Tier 0 Switch" }
       ],
-      "correctAnswer": "a"
+      "correctAnswer": "c"
     },
     {
       "id": "q18",
@@ -2487,7 +2487,7 @@ category: "3.2 курс",
         { "id": "a", "text": "Azure Cosmos DB" },
         { "id": "b", "text": "Azure Database for MySQL" },
         { "id": "c", "text": "Azure Database for PostgreSQL" },
-        { "id": "d", "text": "Azure Database for MSSQL" }
+        { "id": "d", "text": "Azure SQL Database" }
       ],
       "correctAnswer": ["b", "c", "d"]
     },
