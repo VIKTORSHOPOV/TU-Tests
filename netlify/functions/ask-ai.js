@@ -77,6 +77,11 @@ exports.handler = async (event) => {
     });
   }
 
+  if (correctAnswerText) {
+    promptParts.push('');
+    promptParts.push(`Правилен отговор: ${correctAnswerText}`);
+  }
+
   const prompt = promptParts.join('\n');
 
   const callModelWithTimeout = async (modelName) => {
