@@ -95,14 +95,19 @@ exports.handler = async (event) => {
     }
   }
 
-  // Peak-hours fallback: try Groq Llama when all Gemini models are overwhelmed.
+  // Peak-hours fallback: try Groq when all Gemini models are overwhelmed.
+  // NOTE: Groq periodically moves models to Enterprise-only ("Contact Sales").
+  // If this starts failing with a 404 "model_not_found" error, check
+  // https://console.groq.com/docs/models for the current free-tier/pay-as-you-go lineup
+  // and update GROQ_FALLBACK_MODEL below accordingly.
+  const GROQ_FALLBACK_MODEL = 'openai/gpt-oss-120b';
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5500);
 
     const groqResponse = await groq.chat.completions.create(
       {
-        model: 'llama-3.3-70b-versatile',
+        model: GROQ_FALLBACK_MODEL,
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 4096
       },
@@ -115,7 +120,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ explanation, modelUsed: 'Groq Llama 3.3' })
+        body: JSON.stringify({ explanation, modelUsed: 'Groq GPT-OSS 120B' })
       };
     }
   } catch (err) {
