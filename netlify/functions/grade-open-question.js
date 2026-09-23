@@ -160,12 +160,14 @@ maxPoints: ${resolvedScoring?.points || 1}`;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2000);
 
-    const groqResponse = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      messages: [{ role: 'user', content: gradingPrompt }],
-      max_tokens: 2048,
-      signal: controller.signal
-    });
+    const groqResponse = await groq.chat.completions.create(
+      {
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: gradingPrompt }],
+        max_tokens: 2048
+      },
+      { signal: controller.signal }
+    );
     clearTimeout(timeoutId);
 
     const rawText = groqResponse.choices?.[0]?.message?.content;

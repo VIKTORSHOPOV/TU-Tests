@@ -100,12 +100,14 @@ exports.handler = async (event) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5500);
 
-    const groqResponse = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 4096,
-      signal: controller.signal
-    });
+    const groqResponse = await groq.chat.completions.create(
+      {
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 4096
+      },
+      { signal: controller.signal }
+    );
     clearTimeout(timeoutId);
 
     const explanation = groqResponse.choices?.[0]?.message?.content;
