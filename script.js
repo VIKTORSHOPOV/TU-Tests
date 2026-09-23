@@ -1157,8 +1157,16 @@ async function askAI(buttonElement, questionText, optionsArray, examId, question
         }
 
         const raw = data.explanation || '';
-        const withLineBreaks = raw.replace(/\n/g, '<br>');
+
+        const escaped = raw
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+
+        const withLineBreaks = escaped.replace(/\n/g, '<br>');
         const withHeadings = withLineBreaks.replace(/### (.*?)<br>/g, '<strong class="ai-subheading">$1</strong><br>');
+        const withBold = withHeadings.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        const withCode = withBold.replace(/`(.*?)`/g, '<code>$1</code>');
 
         const modelUsed = data.modelUsed;
         const formattedModelName = modelUsed
@@ -1168,7 +1176,7 @@ async function askAI(buttonElement, questionText, optionsArray, examId, question
               .replace('-flash', ' Flash')
           : null;
 
-        explanationContainer.innerHTML = `<div class="ai-response-inner">${withHeadings}</div>`;
+        explanationContainer.innerHTML = `<div class="ai-response-inner">${withCode}</div>`;
         if (formattedModelName) {
           explanationContainer.insertAdjacentHTML('beforeend', `<div class="ai-model-badge" style="font-size: 0.8rem; opacity: 0.7; margin-top: 12px; border-top: 1px solid #ccc; padding-top: 6px;">${formattedModelName}</div>`);
         }
