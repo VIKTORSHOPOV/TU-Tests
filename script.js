@@ -437,7 +437,7 @@ function loadQuestion(index) {
     askAiBtn.className = 'btn-ask-ai';
     askAiBtn.textContent = '✨ Попитай AI';
     const options = question.choices ? question.choices.map(c => c.text) : [];
-    askAiBtn.addEventListener('click', () => askAI(askAiBtn, question.prompt, options));
+    askAiBtn.addEventListener('click', () => askAI(askAiBtn, question.prompt, options, currentExam.id, question.id));
     domElements.questionContent.appendChild(askAiBtn);
 
     // Make entire choice items clickable without breaking native input/label clicks
@@ -1108,7 +1108,7 @@ function calculateSimilarity(str1, str2) {
 }
 
 // Ask AI for question explanation
-async function askAI(buttonElement, questionText, optionsArray) {
+async function askAI(buttonElement, questionText, optionsArray, examId, questionId) {
     const originalText = buttonElement.textContent;
     buttonElement.disabled = true;
     buttonElement.textContent = '⏳ AI мисли...';
@@ -1139,7 +1139,7 @@ async function askAI(buttonElement, questionText, optionsArray) {
         const response = await fetch('/.netlify/functions/ask-ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ questionText, options: Array.isArray(optionsArray) ? optionsArray : [] })
+            body: JSON.stringify({ questionText, options: Array.isArray(optionsArray) ? optionsArray : [], examId, questionId })
         });
         clearCosmeticTimeouts();
 
@@ -1237,7 +1237,7 @@ function displayResults(result) {
         askAiBtn.className = 'btn-ask-ai';
         askAiBtn.textContent = '✨ Попитай AI';
         const options = question.choices ? question.choices.map(c => c.text) : [];
-        askAiBtn.addEventListener('click', () => askAI(askAiBtn, question.prompt, options));
+        askAiBtn.addEventListener('click', () => askAI(askAiBtn, question.prompt, options, currentExam.id, question.id));
         resultElement.querySelector('.result-question').appendChild(askAiBtn);
 
         domElements.questionBreakdown.appendChild(resultElement);

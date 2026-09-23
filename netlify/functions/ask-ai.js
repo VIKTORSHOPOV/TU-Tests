@@ -1,5 +1,6 @@
 const { GoogleGenAI } = require('@google/genai');
 const { Groq } = require('groq-sdk');
+const { getExamById } = require('./data/exams');
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -23,7 +24,32 @@ exports.handler = async (event) => {
     };
   }
 
-  const { questionText, options } = JSON.parse(event.body || '{}');
+  const { questionText, options, examId, questionId } = JSON.parse(event.body || '{}');
+
+  let correctAnswerText = null;
+  if (examId && questionId) {
+    const exam = getExamById(examId);
+    const question = exam?.questions?.find(q => q.id === questionId);
+    if (question && question.correctAnswer !== undefined) {
+      const correctAnswer = question.correctAnswer;
+      if (question.type === 'single') {
+        const choice = question.choices?.find(c => c.id === correctAnswer);
+        correctAnswerText = choice ? choice.text : correctAnswer;
+      } else if (question.type === 'multiple') {
+        if (Array.isArray(correctAnswer)) {
+          correctAnswerText = correctAnswer.map(id => {
+            const choice = question.choices?.find(c => c.id === id);
+            return choice ? choice.text : id;
+          }).join(', ');
+        } else {
+          const choice = question.choices?.find(c => c.id === correctAnswer);
+          correctAnswerText = choice ? choice.text : correctAnswer;
+        }
+      } else {
+        correctAnswerText = Array.isArray(correctAnswer) ? correctAnswer.join(' или ') : String(correctAnswer);
+      }
+    }
+  }
 
   const promptParts = [
     'Активирай се като академичен асистент за университетски изпити. Твоят отговор трябва да бъде изключително кратък, точен и с високо усвояване, оптимизиран за бързо повторение и запомняне за изпит.',
@@ -32,6 +58,7 @@ exports.handler = async (event) => {
     '- Бъди стриктно кратък и с точкови. Избягвай въведения, излишни думи или ненужни мета-обяснения.',
     '- Отговаряй на български (или на езика на въпроса).',
     '- Максимум около 120 думи общо (без код). Да не се повтаря между разделите. Не обяснявай неща, които кодът самият прави очевидни.',
+    '- Базирай обяснението и корекцията върху дадения правилен отговор. Обясни защо той е верен и защо останалите са грешни, без да споменаваш потребителския отговор.',
     '- Следвай тази точно шаблонна структура:',
     '',
     '### Обяснение',
@@ -119,6 +146,17 @@ exports.handler = async (event) => {
     }
   } catch (err) {
     console.warn('Groq fallback failed/timed out:', err.message || err);
+  }
+
+  if (correctAnswerText) {
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        explanation: `Всички модели временно не са на разположение.\n\nПравилен отговор: ${correctAnswerText}`,
+        modelUsed: 'fallback'
+      })
+    };
   }
 
   return {
