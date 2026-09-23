@@ -1,13 +1,14 @@
 const { GoogleGenAI } = require('@google/genai');
+const { Groq } = require('groq-sdk');
 const { getExamById } = require('./data/exams');
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
 const MODELS = [
   'gemini-3.5-flash-lite',
-  'gemini-3.1-flash-lite',
-  'gemini-2.5-flash-lite',
-  'gemini-2.5-flash'
+  'gemini-3.1-flash-lite'
 ];
 
 const CORS_HEADERS = {
@@ -152,6 +153,35 @@ maxPoints: ${resolvedScoring?.points || 1}`;
       console.warn(`Model ${modelName} failed/timed out:`, err.message || err);
       continue;
     }
+  }
+
+  // Peak-hours fallback: try Groq Llama when all Gemini models are overwhelmed.
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+
+    const groqResponse = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'user', content: gradingPrompt }],
+      max_tokens: 2048,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    const rawText = groqResponse.choices?.[0]?.message?.content;
+    if (rawText) {
+      const parsed = parseGradingResult(rawText, resolvedScoring?.points || 1);
+      return {
+        statusCode: 200,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({
+          ...parsed,
+          modelUsed: 'Groq Llama 3.3'
+        })
+      };
+    }
+  } catch (err) {
+    console.warn('Groq fallback failed/timed out:', err.message || err);
   }
 
   return {

@@ -1,12 +1,13 @@
 const { GoogleGenAI } = require('@google/genai');
+const { Groq } = require('groq-sdk');
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
 const MODELS = [
   'gemini-3.5-flash-lite',
-  'gemini-3.1-flash-lite',
-  'gemini-2.5-flash-lite',
-  'gemini-2.5-flash'
+  'gemini-3.1-flash-lite'
 ];
 
 exports.handler = async (event) => {
@@ -92,6 +93,31 @@ exports.handler = async (event) => {
       console.warn(`Model ${modelName} failed/timed out:`, err.message || err);
       continue;
     }
+  }
+
+  // Peak-hours fallback: try Groq Llama when all Gemini models are overwhelmed.
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5500);
+
+    const groqResponse = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 4096,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    const explanation = groqResponse.choices?.[0]?.message?.content;
+    if (explanation) {
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ explanation, modelUsed: 'Groq Llama 3.3' })
+      };
+    }
+  } catch (err) {
+    console.warn('Groq fallback failed/timed out:', err.message || err);
   }
 
   return {
