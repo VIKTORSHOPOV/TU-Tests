@@ -1119,8 +1119,21 @@ async function askAI(buttonElement, questionText, optionsArray) {
         explanationContainer.className = 'ai-explanation';
         buttonElement.insertAdjacentElement('afterend', explanationContainer);
     }
-    explanationContainer.innerHTML = '<div class="ai-response-inner ai-loading">⏳ AI обяснява...</div>';
+    const cosmeticTimeouts = [];
+    explanationContainer.innerHTML = '<div class="ai-response-inner ai-loading">⏳ Опитва Gemini 3.5 Flash-Lite...</div>';
     explanationContainer.classList.remove('hidden');
+
+    cosmeticTimeouts.push(setTimeout(() => {
+        explanationContainer.innerHTML = '<div class="ai-response-inner ai-loading">⏳ Опитва Gemini 3.1 Flash-Lite...</div>';
+    }, 5500));
+
+    cosmeticTimeouts.push(setTimeout(() => {
+        explanationContainer.innerHTML = '<div class="ai-response-inner ai-loading">⏳ Опитва резервен модел...</div>';
+    }, 11000));
+
+    const clearCosmeticTimeouts = () => {
+        cosmeticTimeouts.forEach(id => clearTimeout(id));
+    };
 
     try {
         const response = await fetch('/.netlify/functions/ask-ai', {
@@ -1128,6 +1141,7 @@ async function askAI(buttonElement, questionText, optionsArray) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ questionText, options: Array.isArray(optionsArray) ? optionsArray : [] })
         });
+        clearCosmeticTimeouts();
 
         const rawText = await response.text();
 
@@ -1159,6 +1173,7 @@ async function askAI(buttonElement, questionText, optionsArray) {
           explanationContainer.insertAdjacentHTML('beforeend', `<div class="ai-model-badge" style="font-size: 0.8rem; opacity: 0.7; margin-top: 12px; border-top: 1px solid #ccc; padding-top: 6px;">${formattedModelName}</div>`);
         }
     } catch (error) {
+        clearCosmeticTimeouts();
         console.error('Ask AI error:', error);
         explanationContainer.innerHTML = `<div class="ai-response-inner ai-error">❌ ${error.message}</div>`;
     } finally {
