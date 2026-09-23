@@ -2694,191 +2694,479 @@ category: "3.2 курс",
 }
 ,
   {
-    id: "exam-mobile-dev-2025-07-10",
-category: "3.2 курс",
-    title: "Тест за изпит по дисциплината „Програмиране за мобилни устройства“",
-    description: "Изпитен тест по мобилни устройства, JavaScript, хибридни приложения и Framework7.",
-    passwordHash: "",
-    settings: {
-      shuffleQuestions: false,
-      shuffleChoices: false,
-      timeLimitSeconds: 1800,
-      allowImmediateRetry: true,
-      passingScorePercent: 70,
-      maxAttempts: 3
+  "id": "exam-mobile-dev-combined-final",
+  "category": "3.2 курс",
+  "title": "Тест за изпит по дисциплината „Програмиране за мобилни устройства“ (Обединен – всички варианти)",
+  "description": "Пълен изпитен банк от въпроси от трите варианта: 12.06.2026, 24.04.2026 и 10.07.2025. Включва всички уникални въпроси с коригирани отговори.",
+  "passwordHash": "",
+  "settings": {
+    "shuffleQuestions": false,
+    "shuffleChoices": false,
+    "timeLimitSeconds": 3600,
+    "allowImmediateRetry": true,
+    "passingScorePercent": 70,
+    "maxAttempts": 3
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "single",
+      "points": 1,
+      "prompt": "Какво е предназначението на минималния жизнеспособен продукт (MVP) при разработката на мобилни приложения?",
+      "choices": [
+        { "id": "a", "text": "Най-проста версия на продукта с основни функции за тестване на пазара." },
+        { "id": "b", "text": "Прототип на потребителския интерфейс." },
+        { "id": "c", "text": "Финалната версия на приложението." },
+        { "id": "d", "text": "Документация за разработчиците." }
+      ],
+      "correctAnswer": "a"
     },
-    questions: [
-      {
-        id: "q1",
-        type: "single",
-        points: 1,
-        prompt: "Какво е предназначението на минималния жизнеспособен продукт (MVP) при разработката на мобилни приложения?",
-        choices: [
-          { id: "a", text: "Най-проста версия на продукта с основни функции за тестване на пазара." },
-          { id: "b", text: "Прототип на потребителския интерфейс." },
-          { id: "c", text: "Финалната версия на приложението." },
-          { id: "d", text: "Документация за разработчиците." }
-        ],
-        correctAnswer: "a"
-      },
-      {
-        id: "q2",
-        type: "single",
-        points: 1,
-        prompt: "Какво е предназначението на жироскопа в мобилните устройства?",
-        choices: [
-          { id: "a", text: "Измерва магнитното поле на Земята." },
-          { id: "b", text: "Определя надморска височина." },
-          { id: "c", text: "Измерва ускорението по трите оси (X, Y, Z)." },
-          { id: "d", text: "Измерва ъгловата скорост на завъртане." }
-        ],
-        correctAnswer: "d"
-      },
-      {
-        id: "q3_code",
-        type: "open",
-        points: 1.5,
-        prompt: "Даден е следният JavaScript обект: let student = { name: \"Иван Петров\", grades: [5, 6, 4, 5, 6], faculty: \"EE\" }; Напишете JavaScript код, който изчислява и извежда средната оценка на студента.",
-        correctAnswer: "const avg = student.grades.reduce((s, g) => s + g, 0) / student.grades.length; console.log(avg);",
-        scoring: { type: "code", language: "javascript" }
-      },
-      {
-        id: "q4",
-        type: "single",
-        points: 1,
-        prompt: "Какво представлява JavaScript Promise?",
-        choices: [
-          { id: "a", text: "Обект, който представлява евентуално завършване на асинхронна операция." },
-          { id: "b", text: "Функция, която се изпълнява веднага." },
-          { id: "c", text: "Тип данни за съхранение на низове." },
-          { id: "d", text: "Метод за обработка на събития." }
-        ],
-        correctAnswer: "a"
-      },
-      {
-        id: "q5",
-        type: "single",
-        points: 1,
-        prompt: "Какво е предназначението на вградения в някои мобилни устройства барометър?",
-        choices: [
-          { id: "a", text: "Връща надморската височина в метри." },
-          { id: "b", text: "Връща скоростта на движение на мобилното устройство." },
-          { id: "c", text: "Връща оценка за стойността на атмосферното налягане в милибари." },
-          { id: "d", text: "Връща оценка за локацията на мобилното устройство." }
-        ],
-        correctAnswer: "c"
-      },
-      {
-        id: "q6",
-        type: "multiple",
-        points: 1.5,
-        prompt: "Маркирайте верните отговори:",
-        choices: [
-          { id: "a", text: "HTML5 въведе нови семантични елементи като &lt;header&gt;, &lt;nav&gt;, &lt;section&gt;." },
-          { id: "b", text: "CSS Grid е по-подходящ за двумерни оформления от Flexbox." },
-          { id: "c", text: "JavaScript е статично типизиран език." },
-          { id: "d", text: "Monaca Cloud IDE позволява разработка на мобилни приложения в браузъра." },
-          { id: "e", text: "Framework7 поддържа само iOS дизайн." }
-        ],
-        correctAnswer: ["a", "b", "d"]
-      },
-      {
-        id: "q7_code",
-        type: "open",
-        points: 1.5,
-        prompt: "Какво е действието на следния JavaScript код: document.addEventListener('deviceready', function(){ console.log('...'); }); Препишете кода като използвате функция-стрелка.",
-        correctAnswer: "document.addEventListener('deviceready', () => { console.log('...'); });",
-        scoring: { type: "code", language: "javascript" }
-      },
-      {
-        id: "q8",
-        type: "single",
-        points: 1,
-        prompt: "Какво е предназначението на таговете &lt;script&gt; и &lt;link&gt; в HTML?",
-        choices: [
-          { id: "a", text: "&lt;script&gt; се използва за включване на JavaScript код, а &lt;link&gt; – за свързване с външни ресурси като CSS." },
-          { id: "b", text: "&lt;script&gt; се използва за стилизиране на страницата, а &lt;link&gt; – за изпълнение на JavaScript." },
-          { id: "c", text: "И двата тага се използват само за метаинформация." },
-          { id: "d", text: "Нито един от тях не се използва в HTML5." }
-        ],
-        correctAnswer: "a"
-      },
-      {
-        id: "q9_code",
-        type: "open",
-        points: 1.5,
-        prompt: "Напишете JavaScript клас WeatherApp, който има конструктор с параметър city и метод getCurrentTemp(), който връща текущата температура в градуси.",
-        correctAnswer: "class WeatherApp { constructor(city) { this.city = city; } getCurrentTemp() { return 0; } }",
-        scoring: { type: "code", language: "javascript" }
-      },
-      {
-        id: "q10",
-        type: "open",
-        points: 1,
-        prompt: "Какво е предназначението на DOM7 в Framework7 v6?",
-        correctAnswer: "Лека DOM библиотека за работа с елементи, подобна на jQuery.",
-        scoring: { type: "text" }
-      },
-      {
-        id: "q11",
-        type: "open",
-        points: 1,
-        prompt: "Защо при JavaScript се изпълва само една програмна нишка?",
-        correctAnswer: "За да е проста и безопасна обработката; асинхронността се управлява с event loop.",
-        scoring: { type: "text" }
-      },
-      {
-        id: "q12",
-        type: "open",
-        points: 1,
-        prompt: "Какви са основните предимства на хибридните мобилни приложения спрямо native приложенията?",
-        correctAnswer: "Един код за Android и iOS, по-бърза разработка и по-ниска цена.",
-        scoring: { type: "text" }
-      },
-      {
-        id: "q13",
-        type: "open",
-        points: 1,
-        prompt: "Какво е local storage при браузърите и за какво може да се използва при хибридните мобилни приложения?",
-        correctAnswer: "Ключ-стойност хранилище за малки постоянни данни; ползва се за настройки, токени и кеш.",
-        scoring: { type: "text" }
-      },
-      {
-        id: "q14",
-        type: "single",
-        points: 1,
-        prompt: "Кой от следните услуги може да се използва за получаване на адрес от GPS координати?",
-        choices: [
-          { id: "a", text: "Here API." },
-          { id: "b", text: "Geoapify API." },
-          { id: "c", text: "Google Geocoding API." },
-          { id: "d", text: "Всички посочени." }
-        ],
-        correctAnswer: "d"
-      },
-      {
-        id: "q15",
-        type: "single",
-        points: 1,
-        prompt: "Кой от следните технологии за разработка на хибридни приложения използва C# като основен програмен език?",
-        choices: [
-          { id: "a", text: "React Native." },
-          { id: "b", text: "Ionic." },
-          { id: "c", text: "Xamarin." },
-          { id: "d", text: "PhoneGap." }
-        ],
-        correctAnswer: "c"
-      },
-      {
-        id: "q16",
-        type: "open",
-        points: 1,
-        prompt: "Какво означава CRUD в контекста на работата с бази данни?",
-        correctAnswer: "Create, Read, Update, Delete.",
-        scoring: { type: "text" }
-      }
-    ]
-  }
+    {
+      "id": "q2",
+      "type": "single",
+      "points": 1,
+      "prompt": "Какво е предназначението на жироскопа в мобилните устройства?",
+      "choices": [
+        { "id": "a", "text": "Измерва магнитното поле на Земята." },
+        { "id": "b", "text": "Определя надморска височина." },
+        { "id": "c", "text": "Измерва ускорението по трите оси (X, Y, Z)." },
+        { "id": "d", "text": "Измерва ъгловата скорост на завъртане." }
+      ],
+      "correctAnswer": "d"
+    },
+    {
+      "id": "q3_code",
+      "type": "open",
+      "points": 1.5,
+      "prompt": "Даден е следният JavaScript обект: let student = { name: \"Иван Петров\", grades: [5, 6, 4, 5, 6], faculty: \"EE\" }; Напишете JavaScript код, който изчислява и извежда средната оценка на студента.",
+      "correctAnswer": "const avg = student.grades.reduce((s, g) => s + g, 0) / student.grades.length; console.log(avg);",
+      "scoring": { "type": "code", "language": "javascript" }
+    },
+    {
+      "id": "q4",
+      "type": "single",
+      "points": 1,
+      "prompt": "Какво представлява JavaScript Promise?",
+      "choices": [
+        { "id": "a", "text": "Обект, който представлява евентуално завършване на асинхронна операция." },
+        { "id": "b", "text": "Функция, която се изпълнява веднага." },
+        { "id": "c", "text": "Тип данни за съхранение на низове." },
+        { "id": "d", "text": "Метод за обработка на събития." }
+      ],
+      "correctAnswer": "a"
+    },
+    {
+      "id": "q5",
+      "type": "single",
+      "points": 1,
+      "prompt": "Какво е предназначението на вградения в някои мобилни устройства барометър?",
+      "choices": [
+        { "id": "a", "text": "Връща надморската височина в метри." },
+        { "id": "b", "text": "Връща скоростта на движение на мобилното устройство." },
+        { "id": "c", "text": "Връща оценка за стойността на атмосферното налягане в милибари." },
+        { "id": "d", "text": "Връща оценка за локацията на мобилното устройство." }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q6",
+      "type": "multiple",
+      "points": 1.5,
+      "prompt": "Маркирайте верните отговори (вариант C, 10.07.2025):",
+      "choices": [
+        { "id": "a", "text": "HTML5 въведе нови семантични елементи като &lt;header&gt;, &lt;nav&gt;, &lt;section&gt;." },
+        { "id": "b", "text": "CSS Grid е по-подходящ за двумерни оформления от Flexbox." },
+        { "id": "c", "text": "JavaScript е статично типизиран език." },
+        { "id": "d", "text": "Monaca Cloud IDE позволява разработка на мобилни приложения в браузъра." },
+        { "id": "e", "text": "Framework7 поддържа само iOS дизайн." }
+      ],
+      "correctAnswer": ["a", "b", "d"]
+    },
+    {
+      "id": "q7_code",
+      "type": "open",
+      "points": 1.5,
+      "prompt": "Какво е действието на следния JavaScript код: document.addEventListener('deviceready', function(){ console.log('...'); }); Препишете кода като използвате функция-стрелка.",
+      "correctAnswer": "document.addEventListener('deviceready', () => { console.log('...'); });",
+      "scoring": { "type": "code", "language": "javascript" }
+    },
+    {
+      "id": "q8",
+      "type": "open",
+      "points": 1,
+      "prompt": "Какво е предназначението на HTML5 / PWA / Manifest в мобилно приложение?",
+      "correctAnswer": "HTML5 предоставя семантични елементи и API; PWA позволява уеб приложение да работи като нативно; Manifest (web app manifest) описва как да изглежда приложението при инсталация на началния екран (икони, име, цветове, ориентация).",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q9",
+      "type": "open",
+      "points": 1,
+      "prompt": "Защо при JavaScript се изпълнява само една програмна нишка?",
+      "correctAnswer": "За да е проста и безопасна обработката; асинхронността се управлява с event loop.",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q10",
+      "type": "open",
+      "points": 1,
+      "prompt": "Какви са основните предимства на хибридните мобилни приложения спрямо native приложенията?",
+      "correctAnswer": "Един код за Android и iOS, по-бърза разработка и по-ниска цена.",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q11",
+      "type": "open",
+      "points": 1,
+      "prompt": "Какво е local storage при браузърите и за какво може да се използва при хибридните мобилни приложения?",
+      "correctAnswer": "Ключ-стойност хранилище за малки постоянни данни; ползва се за настройки, токени и кеш.",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q12",
+      "type": "single",
+      "points": 1,
+      "prompt": "Кой от следните услуги може да се използва за получаване на адрес от GPS координати?",
+      "choices": [
+        { "id": "a", "text": "Here API." },
+        { "id": "b", "text": "Geoapify API." },
+        { "id": "c", "text": "Google Geocoding API." },
+        { "id": "d", "text": "Всички посочени." }
+      ],
+      "correctAnswer": "d"
+    },
+    {
+      "id": "q13",
+      "type": "single",
+      "points": 1,
+      "prompt": "Кой от следните технологии за разработка на хибридни приложения използва C# като основен програмен език?",
+      "choices": [
+        { "id": "a", "text": "React Native." },
+        { "id": "b", "text": "Ionic." },
+        { "id": "c", "text": "Xamarin." },
+        { "id": "d", "text": "PhoneGap." }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q14",
+      "type": "open",
+      "points": 1,
+      "prompt": "Какво означава CRUD в контекста на работата с бази данни?",
+      "correctAnswer": "Create, Read, Update, Delete.",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q15",
+      "type": "single",
+      "points": 1,
+      "prompt": "Кой от следните HTML елементи е добавен в HTML5 и не се поддържа в по-старите версии на HTML?",
+      "choices": [
+        { "id": "a", "text": "table" },
+        { "id": "b", "text": "form" },
+        { "id": "c", "text": "section" },
+        { "id": "d", "text": "img" }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q16",
+      "type": "single",
+      "points": 1,
+      "prompt": "Кое от следните твърдения за MongoDB е вярно?",
+      "choices": [
+        { "id": "a", "text": "Данните се съхраняват в таблици и редове." },
+        { "id": "b", "text": "Всеки документ в колекция трябва да има една и съща структура." },
+        { "id": "c", "text": "Документите се съхраняват в JSON формат." },
+        { "id": "d", "text": "MongoDB не поддържа индексиране на данни." }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q17",
+      "type": "open",
+      "points": 1.5,
+      "prompt": "Какво е действието на следния програмен код? var mainView = app.views.create('.view-main', { url: '/' });",
+      "correctAnswer": "Създава и инициализира основен изглед (View) във Framework7 за елемента с клас .view-main и зарежда начален URL '/'.",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q18",
+      "type": "open",
+      "points": 1,
+      "prompt": "Създаден е обект store, чрез който се достъпва хранилището на Framework7. Напишете кода, който задава стойност true на променлива networkStatus от хранилището.",
+      "correctAnswer": "store.state.networkStatus = true;",
+      "scoring": { "type": "code", "language": "javascript" }
+    },
+    {
+      "id": "q19",
+      "type": "single",
+      "points": 1,
+      "prompt": "Маркирайте JavaScript кода с верен синтаксис за създаване на Promise:",
+      "choices": [
+        { "id": "a", "text": "var promise = new Promise(resolve, reject) { };" },
+        { "id": "b", "text": "let promise = new Promise(resolve, reject) { });" },
+        { "id": "c", "text": "var promise = new Promise(function (resolve, reject) { });" },
+        { "id": "d", "text": "let promise = new Promise((resolve, reject) => { };" }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q20",
+      "type": "multiple",
+      "points": 1.5,
+      "prompt": "Маркирайте верните отговори (вариант A, 12.06.2026):",
+      "choices": [
+        { "id": "a", "text": "Достъпът до апаратните модули при Cordova (Monaca IDE) се реализира само чрез плъгини." },
+        { "id": "b", "text": "Минималният жизнеспособен продукт е скица на потребителския интерфейс на мобилното приложение." },
+        { "id": "c", "text": "JavaScript поддържа явна типизация на данните." },
+        { "id": "d", "text": "Компилираният програмен код за ОС Android е с разширение APK." },
+        { "id": "e", "text": "Електронните барометри могат да се използват за измерване на височина." }
+      ],
+      "correctAnswer": ["a", "d", "e"]
+    },
+    {
+      "id": "q21",
+      "type": "multiple",
+      "points": 1.5,
+      "prompt": "Маркирайте верните отговори (вариант B, 24.04.2026):",
+      "choices": [
+        { "id": "a", "text": "Достъпът до апаратните модули при Cordova (Monaca IDE) се реализира само чрез плъгини." },
+        { "id": "b", "text": "Минималният жизнеспособен продукт е скица на потребителския интерфейс на мобилното приложение." },
+        { "id": "c", "text": "JavaScript не поддържа явна типизация на данните." },
+        { "id": "d", "text": "Компилираният програмен код за ОС Android е с разширение APK." },
+        { "id": "e", "text": "Електронните барометри могат да се използват за измерване на височина." }
+      ],
+      "correctAnswer": ["a", "c", "d", "e"]
+    },
+    {
+      "id": "q22",
+      "type": "single",
+      "points": 1.5,
+      "prompt": "При какво условие можем да зададем timeout за HTTP(S) заявка чрез метод request във Framework7?",
+      "choices": [
+        { "id": "a", "text": "Винаги можем да зададем timeout." },
+        { "id": "b", "text": "Кеширането на заявката трябва да е забранено (cache: false)." },
+        { "id": "c", "text": "Заявката трябва да е от тип POST." },
+        { "id": "d", "text": "Трябва да е зададена асинхронна обработка на заявката (async: true)." }
+      ],
+      "correctAnswer": "d"
+    },
+    {
+      "id": "q23",
+      "type": "single",
+      "points": 1,
+      "prompt": "Какво е предназначението на библиотеката PWACompact?",
+      "choices": [
+        { "id": "a", "text": "За автоматизиране на server-side рендериране чрез Node.js оптимизации за React приложения." },
+        { "id": "b", "text": "За улесняване на създаването, конфигурирането и оптимизацията на прогресивни уеб приложения (PWA)." },
+        { "id": "c", "text": "За управление на локални SQL-тип бази данни." },
+        { "id": "d", "text": "За компилиране на JavaScript код до WebAssembly код." }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "q24",
+      "type": "open",
+      "points": 1,
+      "prompt": "Кой е селекторът и какво е действието на следното CSS правило? .dashboard .widget[data-type=\"chart\"] h3.title { margin-bottom: 8px; font-weight: 600; }",
+      "correctAnswer": "Селектор: .dashboard .widget[data-type=\"chart\"] h3.title. Действие: Задава margin-bottom 8px и font-weight 600 на заглавия h3 с клас title вътре в уиджети с атрибут data-type='chart' в таблото .dashboard.",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q25",
+      "type": "open",
+      "points": 1.5,
+      "prompt": "Какво е предназначението на потребителското поле type при push нотификациите и за какво може да се използва?",
+      "correctAnswer": "Определя типа/категорията на нотификацията и служи да укаже на приложението кой точно екран или действие да отвори при кликване.",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q26",
+      "type": "single",
+      "points": 1,
+      "prompt": "Какво връща електронният компас, вграден в мобилните устройства?",
+      "choices": [
+        { "id": "a", "text": "Посока на придвижване спрямо северния полюс." },
+        { "id": "b", "text": "Посока на придвижване спрямо северния магнитен полюс." },
+        { "id": "c", "text": "Зависи от типа на компаса." },
+        { "id": "d", "text": "Няма верен отговор." }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "q27",
+      "type": "open",
+      "points": 1,
+      "prompt": "Коя е най-често използваната локална база данни при мобилните приложения?",
+      "correctAnswer": "SQLite",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q28",
+      "type": "single",
+      "points": 1,
+      "prompt": "Как работят хибридните мобилни приложения, които се базират на Web технологии?",
+      "choices": [
+        { "id": "a", "text": "Изпълняват се директно като машинен код върху мобилната операционна система." },
+        { "id": "b", "text": "Работят в Web view компонент." },
+        { "id": "c", "text": "Изискват отделна компилация за всяко устройство на ниво хардуер." },
+        { "id": "d", "text": "Работят само чрез облачни сървъри без локално изпълнение." }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "q29",
+      "type": "single",
+      "points": 1,
+      "prompt": "Кой от изброените HTML етикети се поддържа само при HTML5?",
+      "choices": [
+        { "id": "a", "text": "meta" },
+        { "id": "b", "text": "main" },
+        { "id": "c", "text": "table" },
+        { "id": "d", "text": "input" }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "q30",
+      "type": "single",
+      "points": 1,
+      "prompt": "Какво е действието на MongoDB оператора $push?",
+      "choices": [
+        { "id": "a", "text": "Изпраща push известие." },
+        { "id": "b", "text": "Записва стойност в свойство, като изтрива старата стойност." },
+        { "id": "c", "text": "Добавя нова стойност в края на масив." },
+        { "id": "d", "text": "Записва нова стойност в началото на масив." }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q31",
+      "type": "open",
+      "points": 1.5,
+      "prompt": "Какво е действието на следния програмен код? myobject.on('click', (e) => { });",
+      "correctAnswer": "Закача слушател за събитие (event listener) за клик върху обекта myobject.",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q32",
+      "type": "single",
+      "points": 1,
+      "prompt": "Кое свойство е задължително да се декларира при инициализация на локалното хранилище за данни във Framework7 (метод createStore)?",
+      "choices": [
+        { "id": "a", "text": "localstore" },
+        { "id": "b", "text": "store" },
+        { "id": "c", "text": "state" },
+        { "id": "d", "text": "data" }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q33",
+      "type": "single",
+      "points": 1,
+      "prompt": "Чрез коя Framework7 функция можем да изпълним асинхронно заявка към Web или облачна услуга?",
+      "choices": [
+        { "id": "a", "text": "async" },
+        { "id": "b", "text": "ajax" },
+        { "id": "c", "text": "request" },
+        { "id": "d", "text": "submit" }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q34_code",
+      "type": "open",
+      "points": 1.5,
+      "prompt": "Коригирайте грешките в следния програмен код: const setloc = () => { const response = await client.editTagsWithExUserIdDevice('df367gd77', { tags: { latitude: 42.88 longitude: 25.32 } }) }",
+      "correctAnswer": "const setloc = async () => { const response = await client.editTagsWithExUserIdDevice('df367gd77', { tags: { latitude: 42.88, longitude: 25.32 } }); };",
+      "scoring": { "type": "code", "language": "javascript" }
+    },
+    {
+      "id": "q35",
+      "type": "single",
+      "points": 1,
+      "prompt": "За кои операционни системи могат да се създават мобилни приложения при използване на програмна рамка Framework7?",
+      "choices": [
+        { "id": "a", "text": "Само за Android." },
+        { "id": "b", "text": "Само за iOS." },
+        { "id": "c", "text": "За Android, iOS и Windows." },
+        { "id": "d", "text": "Няма верен отговор." }
+      ],
+      "correctAnswer": "c"
+    },
+    {
+      "id": "q36",
+      "type": "open",
+      "points": 1,
+      "prompt": "Кой е селекторът и какво е действието на следното CSS правило? .geofence-data input[type='text'] { font: 12px 'Helvetica Neue', Arial, Helvetica, sans-serif; }",
+      "correctAnswer": "Селектор: .geofence-data input[type='text']. Действие: Задава шрифт Helvetica Neue 12px за текстови входни полета в .geofence-data.",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q37_code",
+      "type": "open",
+      "points": 1.5,
+      "prompt": "Даден е следният масив: var months = ['януари', 'февруари', 'март', 'април', 'май', 'юни', 'юли', 'август', 'септември', 'октомври', 'ноември', 'декември']; Напишете програмния код, който реверсира позициите на елементите на масива.",
+      "correctAnswer": "months.reverse();",
+      "scoring": { "type": "code", "language": "javascript" }
+    },
+    {
+      "id": "q38",
+      "type": "open",
+      "points": 1,
+      "prompt": "Коя хибридна програмна рамка използва програмен език Dart?",
+      "correctAnswer": "Flutter",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q39",
+      "type": "open",
+      "points": 1,
+      "prompt": "Какво е предназначението на Framework7?",
+      "correctAnswer": "Отворена HTML/CSS/JS библиотека за изграждане на мобилни и десктоп приложения с нативен изглед и усещане за iOS и Android.",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q40",
+      "type": "open",
+      "points": 1,
+      "prompt": "С какъв запис трябва да завършва обектът, който описва пътищата за маршрутизатора на Framework7 и защо?",
+      "correctAnswer": "Трябва да завършва с wildcard пътека (напр. { path: '(.*)', url: './pages/404.html' }) за прихващане на сгрешени/несъществуващи адреси (404).",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q41",
+      "type": "single",
+      "points": 1,
+      "prompt": "Кой метод трябва да се извика при работа с обект-обещание (Promise), за да се укаже успешно изпълнение на програмния код?",
+      "choices": [
+        { "id": "a", "text": "then" },
+        { "id": "b", "text": "reject" },
+        { "id": "c", "text": "resolve" },
+        { "id": "d", "text": "Няма верен отговор." }
+      ],
+      "correctAnswer": "a"
+    },
+    {
+      "id": "q42",
+      "type": "open",
+      "points": 1,
+      "prompt": "Избройте 2 приложения на данните от вградения в мобилните устройства жироскоп.",
+      "correctAnswer": "1. Управление на герои/превозни средства в игри чрез накланяне на телефона; 2. Завъртане на екрана/панорамна снимка/добавена реалност (AR).",
+      "scoring": { "type": "text" }
+    },
+    {
+      "id": "q43",
+      "type": "open",
+      "points": 1,
+      "prompt": "Как може да разберем каква е хоризонталната точност на GPS локацията?",
+      "correctAnswer": "Чрез свойството position.coords.accuracy (в метри), връщано от Geolocation API.",
+      "scoring": { "type": "text" }
+    }
+  ]
+}
 ,
   {
   "id": "exam-pvs-2025-05-14",
