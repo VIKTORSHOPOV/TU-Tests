@@ -2693,11 +2693,11 @@ category: "3.2 курс",
   ]
 }
 ,
-  {
+ {
   "id": "exam-mobile-dev-combined-final",
   "category": "3.2 курс",
   "title": "Тест за изпит по дисциплината „Програмиране за мобилни устройства“ (Обединен – всички варианти)",
-  "description": "Пълен изпитен банк от въпроси от трите варианта: 12.06.2026, 24.04.2026 и 10.07.2025. Включва всички уникални въпроси с коригирани отговори.",
+  "description": "Пълен изпитен банк от въпроси от трите варианта: 12.06.2026, 24.04.2026 и 10.07.2025. Включва всички уникални въпроси с коригирани и съкратени отговори.",
   "passwordHash": "",
   "settings": {
     "shuffleQuestions": false,
@@ -2739,7 +2739,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1.5,
       "prompt": "Даден е следният JavaScript обект: let student = { name: \"Иван Петров\", grades: [5, 6, 4, 5, 6], faculty: \"EE\" }; Напишете JavaScript код, който изчислява и извежда средната оценка на студента.",
-      "correctAnswer": "const avg = student.grades.reduce((s, g) => s + g, 0) / student.grades.length; console.log(avg);",
+      "correctAnswer": "const avg = student.grades.reduce((s, g) => s + g, 0) / student.grades.length;\nconsole.log(avg);",
       "scoring": { "type": "code", "language": "javascript" }
     },
     {
@@ -2787,7 +2787,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1.5,
       "prompt": "Какво е действието на следния JavaScript код: document.addEventListener('deviceready', function(){ console.log('...'); }); Препишете кода като използвате функция-стрелка.",
-      "correctAnswer": "document.addEventListener('deviceready', () => { console.log('...'); });",
+      "correctAnswer": "Действие: Регистрира слушател за събитието 'deviceready' (готовност на Cordova/Monaca API).\nКод: document.addEventListener('deviceready', () => { console.log('...'); });",
       "scoring": { "type": "code", "language": "javascript" }
     },
     {
@@ -2795,7 +2795,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1,
       "prompt": "Какво е предназначението на HTML5 / PWA / Manifest в мобилно приложение?",
-      "correctAnswer": "HTML5 предоставя семантични елементи и API; PWA позволява уеб приложение да работи като нативно; Manifest (web app manifest) описва как да изглежда приложението при инсталация на началния екран (икони, име, цветове, ориентация).",
+      "correctAnswer": "HTML5: предоставя семантика и API-та.\nPWA: позволява уеб приложение да работи като нативно.\nManifest: дефинира изгледа при инсталация на начален екран (икона, име, цветове).",
       "scoring": { "type": "text" }
     },
     {
@@ -2803,7 +2803,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1,
       "prompt": "Защо при JavaScript се изпълнява само една програмна нишка?",
-      "correctAnswer": "За да е проста и безопасна обработката; асинхронността се управлява с event loop.",
+      "correctAnswer": "За опростяване на изпълнението и избягване на проблеми със синхронизацията (race conditions). Асинхронността се управлява чрез event loop.",
       "scoring": { "type": "text" }
     },
     {
@@ -2811,7 +2811,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1,
       "prompt": "Какви са основните предимства на хибридните мобилни приложения спрямо native приложенията?",
-      "correctAnswer": "Един код за Android и iOS, по-бърза разработка и по-ниска цена.",
+      "correctAnswer": "Единна кодова база за Android и iOS, по-бърза и по-евтина разработка.",
       "scoring": { "type": "text" }
     },
     {
@@ -2819,7 +2819,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1,
       "prompt": "Какво е local storage при браузърите и за какво може да се използва при хибридните мобилни приложения?",
-      "correctAnswer": "Ключ-стойност хранилище за малки постоянни данни; ползва се за настройки, токени и кеш.",
+      "correctAnswer": "Локално key-value съхранение на текстови данни в браузъра. Използва се за запазване на настройки, токени за автентикация и кеширани данни.",
       "scoring": { "type": "text" }
     },
     {
@@ -2887,7 +2887,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1.5,
       "prompt": "Какво е действието на следния програмен код? var mainView = app.views.create('.view-main', { url: '/' });",
-      "correctAnswer": "Създава и инициализира основен изглед (View) във Framework7 за елемента с клас .view-main и зарежда начален URL '/'.",
+      "correctAnswer": "Създава и инициализира основния изглед (View) във Framework7 за елемента с клас '.view-main' и зарежда началния адрес '/'.",
       "scoring": { "type": "text" }
     },
     {
@@ -2970,7 +2970,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1,
       "prompt": "Кой е селекторът и какво е действието на следното CSS правило? .dashboard .widget[data-type=\"chart\"] h3.title { margin-bottom: 8px; font-weight: 600; }",
-      "correctAnswer": "Селектор: .dashboard .widget[data-type=\"chart\"] h3.title. Действие: Задава margin-bottom 8px и font-weight 600 на заглавия h3 с клас title вътре в уиджети с атрибут data-type='chart' в таблото .dashboard.",
+      "correctAnswer": "Селектор: .dashboard .widget[data-type=\"chart\"] h3.title\nДействие: Задава долно разстояние (margin-bottom) 8px и получерен шрифт (font-weight 600) на заглавия h3 с клас title в уиджети от тип 'chart' в контейнера .dashboard.",
       "scoring": { "type": "text" }
     },
     {
@@ -2978,7 +2978,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1.5,
       "prompt": "Какво е предназначението на потребителското поле type при push нотификациите и за какво може да се използва?",
-      "correctAnswer": "Определя типа/категорията на нотификацията и служи да укаже на приложението кой точно екран или действие да отвори при кликване.",
+      "correctAnswer": "Определя категорията/типа на известието. Използва се за рутиране на приложението към конкретен екран или действие при натискане.",
       "scoring": { "type": "text" }
     },
     {
@@ -3046,7 +3046,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1.5,
       "prompt": "Какво е действието на следния програмен код? myobject.on('click', (e) => { });",
-      "correctAnswer": "Закача слушател за събитие (event listener) за клик върху обекта myobject.",
+      "correctAnswer": "Закача регистратор (event listener) за събитието 'click' върху обекта myobject.",
       "scoring": { "type": "text" }
     },
     {
@@ -3080,7 +3080,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1.5,
       "prompt": "Коригирайте грешките в следния програмен код: const setloc = () => { const response = await client.editTagsWithExUserIdDevice('df367gd77', { tags: { latitude: 42.88 longitude: 25.32 } }) }",
-      "correctAnswer": "const setloc = async () => { const response = await client.editTagsWithExUserIdDevice('df367gd77', { tags: { latitude: 42.88, longitude: 25.32 } }); };",
+      "correctAnswer": "const setloc = async () => {\n  const response = await client.editTagsWithExUserIdDevice('df367gd77', {\n    tags: { latitude: 42.88, longitude: 25.32 }\n  });\n};",
       "scoring": { "type": "code", "language": "javascript" }
     },
     {
@@ -3101,7 +3101,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1,
       "prompt": "Кой е селекторът и какво е действието на следното CSS правило? .geofence-data input[type='text'] { font: 12px 'Helvetica Neue', Arial, Helvetica, sans-serif; }",
-      "correctAnswer": "Селектор: .geofence-data input[type='text']. Действие: Задава шрифт Helvetica Neue 12px за текстови входни полета в .geofence-data.",
+      "correctAnswer": "Селектор: .geofence-data input[type='text']\nДействие: Задава размер 12px и шрифт Helvetica Neue за текстовите входни полета в елемент с клас .geofence-data.",
       "scoring": { "type": "text" }
     },
     {
@@ -3125,7 +3125,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1,
       "prompt": "Какво е предназначението на Framework7?",
-      "correctAnswer": "Отворена HTML/CSS/JS библиотека за изграждане на мобилни и десктоп приложения с нативен изглед и усещане за iOS и Android.",
+      "correctAnswer": "HTML/CSS/JS библиотека за изграждане на мобилни приложения с нативен интерфейс за iOS и Android.",
       "scoring": { "type": "text" }
     },
     {
@@ -3133,7 +3133,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1,
       "prompt": "С какъв запис трябва да завършва обектът, който описва пътищата за маршрутизатора на Framework7 и защо?",
-      "correctAnswer": "Трябва да завършва с wildcard пътека (напр. { path: '(.*)', url: './pages/404.html' }) за прихващане на сгрешени/несъществуващи адреси (404).",
+      "correctAnswer": "Завършва с wildcard пътека (напр. { path: '(.*)', url: './pages/404.html' }) за прихващане на несъществуващи адреси (404).",
       "scoring": { "type": "text" }
     },
     {
@@ -3154,7 +3154,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1,
       "prompt": "Избройте 2 приложения на данните от вградения в мобилните устройства жироскоп.",
-      "correctAnswer": "1. Управление на герои/превозни средства в игри чрез накланяне на телефона; 2. Завъртане на екрана/панорамна снимка/добавена реалност (AR).",
+      "correctAnswer": "1. Управление на движение/наклон в игри.\n2. Ориентация на камерата при 360°/AR снимки.",
       "scoring": { "type": "text" }
     },
     {
@@ -3162,7 +3162,7 @@ category: "3.2 курс",
       "type": "open",
       "points": 1,
       "prompt": "Как може да разберем каква е хоризонталната точност на GPS локацията?",
-      "correctAnswer": "Чрез свойството position.coords.accuracy (в метри), връщано от Geolocation API.",
+      "correctAnswer": "Чрез свойството position.coords.accuracy (в метри) от Geolocation API.",
       "scoring": { "type": "text" }
     }
   ]
